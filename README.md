@@ -13,7 +13,7 @@ Based on the [Building AI Agents Architecture](Building%20AI%20Agents%20Architec
                |     You (Founder)      |
                +-----------+------------+
                            |
-            [Terminal CLI / WebSocket / REST]
+        [WebSocket / Web Dashboard / Terminal CLI]
                            |
                +-----------v------------+
                |    LUNA (CEO Agent)    |
@@ -31,7 +31,13 @@ Based on the [Building AI Agents Architecture](Building%20AI%20Agents%20Architec
 +--------+-------+ +-------+-------+ +-------+--------+
          |                 |                 |
   [Home Assistant]  [GitHub/Linear]    [Social APIs]
-  [IoT Webhooks]    [CI/CD & VPS]      [Content Copy]
+  [IoT Webhooks]    [Local Git & CI]   [Content Copy]
+                           |
+               +-----------v------------+
+               |  Unified Persistence   |
+               |  - SQLite Memory DB    |
+               |  - Audit Log & History |
+               +------------------------+
 ```
 
 ---
@@ -39,99 +45,115 @@ Based on the [Building AI Agents Architecture](Building%20AI%20Agents%20Architec
 ## 🚀 Quickstart
 
 ### 1. Requirements & Setup
-- Python 3.11+ (Python 3.13 supported)
-- Virtual environment is already configured in `.venv/`
-
-To install or update dependencies:
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
+- Python 3.11+ (Python 3.13 configured in `.venv/`)
+- Install / update dependencies:
+  ```powershell
+  .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+  ```
 
 ### 2. Configure Environment (`.env`)
-Copy `.env.example` to `.env` and set your API keys:
+Copy `.env.example` to `.env` to configure your API credentials:
 ```ini
 OPENAI_API_KEY=your_openai_api_key_here
 LUNA_CEO_MODEL=gpt-4o
 LUNA_WORKER_MODEL=gpt-4o-mini
 
-# Optional Integrations
+# Service Integrations (Optional)
 HOME_ASSISTANT_URL=http://homeassistant.local:8123
 HOME_ASSISTANT_TOKEN=
 GITHUB_ACCESS_TOKEN=
 LINEAR_API_KEY=
+TWITTER_BEARER_TOKEN=
 ```
-> **Note:** If `OPENAI_API_KEY` is not provided or is invalid, LUNA automatically operates in **Intelligent Simulation Mode**, allowing you to test full delegation, safety guardrails, and debriefing without breaking.
+> **Note:** LUNA has an intelligent fallback engine. Even without external API keys, all delegation workflows, local Git inspection, IoT simulation, and executive debriefs operate out-of-the-box!
 
-### 3. Launch LUNA
-Run the interactive Founder CLI:
+---
+
+## 🖥️ Running LUNA
+
+### Option A: Modern Executive Web Dashboard (Recommended)
+Launch the FastAPI backend and real-time streaming web dashboard:
+```powershell
+.\.venv\Scripts\python.exe main.py --web
+```
+Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
+
+**Web Dashboard Features:**
+- **Founder Command Center**: Issue complex natural language mandates with one-click quick action pills.
+- **WebSocket Streaming**: Watch LUNA plan, decompose tasks, and stream agent executions in real-time.
+- **Interactive Safety Modal**: Visually approve or abort high-risk operations (e.g., prod deployments, unlocking doors).
+- **Executive CEO Debrief Card**: Highlights, operational summaries, and proactive strategic recommendations.
+- **Persistent Operational Memory**: SQLite history drawer of past sessions, clickable for instant review.
+
+---
+
+### Option B: Interactive Terminal CLI
+Prefer working strictly in your command line? Launch the terminal interface:
 ```powershell
 .\.venv\Scripts\python.exe main.py
 ```
 
 ---
 
-## 💡 Example Directives to Try in CLI
+## 💡 Example Mandates to Try
 
 1. **Multi-Domain Coordination**:
-   ```text
-   Founder > Dim the office lights to 40%, check the latest GitHub build status, and draft a tweet announcing our launch.
-   ```
+   > *"Dim office lights to 30%, inspect latest build status, and prep a tweet announcing our beta."*
 2. **Safety Sign-Off Test (Human-in-the-Loop)**:
-   ```text
-   Founder > Deploy main branch to production and unlock the front door for the guest.
-   ```
-   *LUNA detects high-risk operations and prompts for Founder sign-off before executing.*
-3. **Engineering Status**:
-   ```text
-   Founder > Inspect open issues and check if CI/CD pipelines are passing.
-   ```
-4. **Growth & Social**:
-   ```text
-   Founder > Summarize our weekly marketing reach and prepare 3 post ideas for X.
-   ```
+   > *"Deploy current main branch to production and unlock the front door."*  
+   *(LUNA intercepts the dangerous keywords and demands Founder confirmation).*
+3. **Engineering Telemetry**:
+   > *"Check our local git branch, recent commits, and open pull requests."*
+4. **Growth & Analytics**:
+   > *"Give me an update on our marketing metrics and draft a post for X."*
+5. **Dynamic Web Research**:
+   > *"Research the top 2026 AI agent architecture trends."*
 
 ---
 
-## 📁 Directory Structure
+## 📁 Project Structure
 
 ```
 LUNA/
-├── .env.example              # Environment variables template
-├── requirements.txt          # Dependencies
-├── main.py                   # System entry point
-├── README.md                 # Documentation
+├── .env.example                   # Environment configuration template
+├── requirements.txt               # Dependencies
+├── main.py                        # Entry point (CLI & Web Dashboard)
+├── luna_memory.db                 # SQLite persistent memory database
+├── README.md                      # System documentation
 └── luna/
-    ├── config.py             # Settings & environment variables
+    ├── config.py                  # Settings & environment variables
     ├── models/
-    │   └── schemas.py        # Pydantic schemas (CEODecision, SubTask, CEOFinalReport)
+    │   └── schemas.py             # Pydantic schemas (CEODecision, SubTask, CEOFinalReport)
     ├── core/
-    │   ├── engine.py         # LunaCEOEngine (Planner, Dispatcher, Synthesizer)
-    │   └── state.py          # State tracking & audit logs
+    │   ├── engine.py              # LunaCEOEngine (Planner, Dispatcher, Synthesizer)
+    │   └── state.py               # Session state & audit logs
     ├── agents/
-    │   ├── base.py           # Base specialist agent
-    │   ├── smart_home.py     # Smart Home specialist
-    │   ├── projects.py       # Projects & Dev specialist
-    │   ├── marketing.py      # Marketing & Growth specialist
-    │   └── adhoc.py          # Dynamic on-demand specialist
+    │   ├── base.py                # Base specialist agent
+    │   ├── smart_home.py          # Smart Home Specialist (IoT / Home Assistant)
+    │   ├── projects.py            # Project & Tech Lead (Local Git & GitHub CI/CD)
+    │   ├── marketing.py           # Marketing & Growth Lead (Social Copy & Metrics)
+    │   └── adhoc.py               # Dynamic On-Demand Specialist (Web Research)
+    ├── integrations/
+    │   ├── home_assistant.py      # Home Assistant REST client & device controls
+    │   ├── github_client.py       # Git & GitHub REST integration
+    │   ├── social_client.py       # Social media formatter & staging queue
+    │   └── web_research.py        # DuckDuckGo live search & web scraper
     ├── safety/
-    │   └── guardrails.py     # Founder confirmation & RBAC security gate
+    │   └── guardrails.py          # Founder sign-off gate for high-risk actions
+    ├── memory/
+    │   └── database.py            # Async SQLite memory storage
+    ├── api/
+    │   ├── server.py              # FastAPI server & WebSocket streaming
+    │   └── static/
+    │       └── index.html         # Executive Founder Web Dashboard
     └── cli/
-        └── console.py        # Interactive rich terminal UI
+        └── console.py             # Interactive Rich terminal UI
 ```
 
 ---
 
-## 🛣️ Roadmap
+## 🏁 Completed Phases
 
-- [x] **Phase 1: Core Engine & Sub-Agent Coordinator (Completed)**
-  - Hierarchical CEO-worker architecture
-  - Structured output schemas with Pydantic
-  - Safety guardrails for high-risk operations
-  - Interactive terminal CLI
-- [ ] **Phase 2: Live Service Connectors**
-  - Home Assistant REST / WebSocket client
-  - PyGithub & Linear GraphQL client
-  - Social media APIs (X / Meta / YouTube)
-- [ ] **Phase 3: Web Dashboard & Semantic Memory**
-  - Next.js founder dashboard with real-time streaming updates
-  - Vector DB (ChromaDB / Qdrant) for long-term memory
+- [x] **Phase 1: Core Foundation & CEO Supervisor Engine**
+- [x] **Phase 2: Real Service Tool Connectors & Integrations**
+- [x] **Phase 3: Executive Web Dashboard, WebSocket Streaming & Persistent Memory**
