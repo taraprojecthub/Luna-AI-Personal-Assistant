@@ -72,9 +72,9 @@ class WindowsOSTools:
             return {"success": False, "error": str(e)}
 
     @classmethod
-    def execute_nova_desktop_action(cls, text: str) -> Optional[str]:
+    def execute_desktop_action(cls, text: str) -> Optional[str]:
         """
-        Executes NOVA desktop actions (apps, browser, folders).
+        Executes LUNA desktop actions (apps, browser, folders).
         Understands English, Sinhala, and Singlish.
         """
         normalized = text.lower().strip()

@@ -33,10 +33,10 @@ class SystemControlAgent(BaseAgent):
         # Strip generic planner prefixes
         clean_text = re.sub(r"^execute autonomous developer os operation:\s*", "", instruction, flags=re.IGNORECASE).strip()
 
-        # 1. Check NOVA desktop action (apps, folders, websites, Sinhala/English commands)
-        nova_action = self.os_tools.execute_nova_desktop_action(clean_text)
-        if nova_action:
-            actions.append(f"[Desktop Action] {nova_action}")
+        # 1. Check LUNA desktop action (apps, folders, websites, Sinhala/English commands)
+        desktop_action = self.os_tools.execute_desktop_action(clean_text)
+        if desktop_action:
+            actions.append(f"[Desktop Action] {desktop_action}")
 
         # 2. Check if a shell command is specified
         cmd_match = re.search(r"(?:run command|powershell|cmd|terminal|shell)[\s:]+['\"]?(.+?)['\"]?$", clean_text, re.IGNORECASE)

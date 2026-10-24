@@ -15,9 +15,9 @@ load_dotenv()
 
 API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 CHAT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini").strip()
-TRANSCRIBE_MODEL = os.getenv("NOVA_TRANSCRIBE_MODEL", "gpt-4o-mini-transcribe").strip()
-TTS_MODEL = os.getenv("NOVA_TTS_MODEL", "gpt-4o-mini-tts").strip()
-TTS_VOICE = os.getenv("NOVA_TTS_VOICE", "marin").strip()
+TRANSCRIBE_MODEL = os.getenv("LUNA_TRANSCRIBE_MODEL", "gpt-4o-mini-transcribe").strip()
+TTS_MODEL = os.getenv("LUNA_TTS_MODEL", "gpt-4o-mini-tts").strip()
+TTS_VOICE = os.getenv("LUNA_TTS_VOICE", "marin").strip()
 SAMPLE_RATE = 16000
 
 if not API_KEY:
@@ -27,7 +27,7 @@ if not API_KEY:
 
 client = OpenAI(api_key=API_KEY)
 conversation = []
-SYSTEM_PROMPT = """You are NOVA, a practical personal AI assistant running on a Windows PC.
+SYSTEM_PROMPT = """You are LUNA, a practical personal AI assistant running on a Windows PC.
 Understand Sinhala, Singlish (Sinhala written with Latin letters), and English.
 Reply in the language the user mainly used. Be concise, clear, and useful.
 You cannot directly control the PC except for the explicitly allowlisted commands
@@ -96,7 +96,7 @@ def speak(text):
         sd.wait()
     except Exception as exc:
         print(f"🔈 Voice playback failed: {exc}")
-        print("NOVA's reply is still available as text.")
+        print("LUNA's reply is still available as text.")
     finally:
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
@@ -132,14 +132,13 @@ def run_local_command(text):
             return "Opening your Downloads folder."
         return "I could not find your Downloads folder."
 
-    if re.search(r"\b(exit|quit|shutdown nova|stop assistant)\b", normalized):
+    if re.search(r"\b(exit|quit|shutdown luna|stop assistant)\b", normalized):
         return "__EXIT__"
 
     return None
 
 def ask_ai(user_text):
     conversation.append({"role": "user", "content": user_text})
-    # Keep a bounded recent conversation so prompts and costs do not grow forever.
     recent = conversation[-16:]
     response = client.responses.create(
         model=CHAT_MODEL,
@@ -154,13 +153,13 @@ def ask_ai(user_text):
 
 def main():
     print("=" * 52)
-    print(" NOVA AI V1 — Windows voice assistant")
+    print(" LUNA Voice AI — Windows voice assistant")
     print("=" * 52)
     print("Language: Sinhala / English / Singlish")
     print("Press Enter to record; press Enter again to stop.")
     print("Say 'open Notepad', 'open Calculator', 'open YouTube',")
     print("'open Downloads', or 'exit'.")
-    print("Safety: NOVA only runs the fixed local commands listed above.")
+    print("Safety: LUNA only runs the fixed local commands listed above.")
     print("Note: API usage may incur charges.\n")
 
     while True:
@@ -168,26 +167,26 @@ def main():
             input("Press Enter when ready to speak (Ctrl+C to stop)...")
             transcript = record_until_enter()
             if not transcript:
-                print("NOVA: I didn't catch any words. Try again.")
+                print("LUNA: I didn't catch any words. Try again.")
                 continue
 
             print(f"\n🗣️ You: {transcript}")
             action_result = run_local_command(transcript)
             if action_result == "__EXIT__":
-                print("NOVA: Goodbye!")
+                print("LUNA: Goodbye!")
                 speak("Goodbye!")
                 break
             if action_result:
-                print(f"🤖 NOVA: {action_result}")
+                print(f"🤖 LUNA: {action_result}")
                 speak(action_result)
                 continue
 
             answer = ask_ai(transcript)
-            print(f"\n🤖 NOVA: {answer}\n")
+            print(f"\n🤖 LUNA: {answer}\n")
             speak(answer)
 
         except KeyboardInterrupt:
-            print("\nNOVA stopped.")
+            print("\nLUNA voice stopped.")
             break
         except Exception as exc:
             print(f"\n⚠️ Error: {exc}")
