@@ -3,571 +3,887 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUNA — Chief Executive AI Dashboard</title>
+  <title>LUNA // EXECUTIVE HOLOGRAPHIC HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0d13;
-      --card-bg: rgba(20, 24, 36, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(255, 255, 255, 0.12);
-      --accent-cyan: #00f2fe;
-      --accent-purple: #9d4edd;
-      --accent-glow: rgba(0, 242, 254, 0.15);
-      --text-main: #f0f3fa;
-      --text-dim: #8e9bb0;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
+      --bg: #03060c;
+      --panel-bg: rgba(7, 13, 24, 0.7);
+      --panel-border: rgba(0, 242, 254, 0.2);
+      --panel-border-bright: rgba(0, 242, 254, 0.6);
+      --cyan: #00f2fe;
+      --cyan-glow: 0 0 25px rgba(0, 242, 254, 0.45);
+      --purple: #9d4edd;
+      --purple-glow: 0 0 25px rgba(157, 78, 221, 0.5);
+      --green: #10b981;
+      --green-glow: 0 0 20px rgba(16, 185, 129, 0.5);
+      --red: #ef4444;
+      --red-glow: 0 0 25px rgba(239, 68, 68, 0.6);
+      --text: #e2f1ff;
+      --text-dim: #64748b;
+      --font-hud: 'Orbitron', monospace, sans-serif;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 10% 20%, #111422 0%, var(--bg) 90%);
-      color: var(--text-main);
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(0, 242, 254, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.06) 0%, transparent 50%),
+        linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
     }
 
-    /* Header */
+    /* Scanline Overlay */
+    body::before {
+      content: " ";
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* HUD Topbar */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem 2.5rem;
-      border-bottom: 1px solid var(--card-border);
-      backdrop-filter: blur(12px);
-      background: rgba(11, 13, 19, 0.85);
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(3, 6, 12, 0.85);
+      backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
-    .brand {
+    .brand-hud {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 1.25rem;
     }
 
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    .hud-reactor {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: var(--cyan-glow);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: #0b0d13;
-      font-size: 1.25rem;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      position: relative;
+      animation: reactorSpin 12s linear infinite;
     }
 
-    .brand-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(90deg, #fff, #b4c6e7);
+    .hud-reactor::before {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px dashed var(--purple);
+      animation: reactorCounterSpin 6s linear infinite;
+    }
+
+    .hud-reactor-core {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 15px var(--cyan);
+    }
+
+    @keyframes reactorSpin { 100% { transform: rotate(360deg); } }
+    @keyframes reactorCounterSpin { 100% { transform: rotate(-360deg); } }
+
+    .brand-title-hud {
+      font-family: var(--font-hud);
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #fff, var(--cyan));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      text-shadow: var(--cyan-glow);
     }
 
-    .brand-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      letter-spacing: 2px;
     }
 
-    .status-pill {
+    .telemetry-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 0.9rem;
-      border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--success);
+      gap: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
-      animation: pulse 2s infinite;
+    .telemetry-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    .telemetry-val {
+      color: var(--cyan);
+      font-weight: 700;
     }
 
-    /* Layout */
-    .dashboard {
+    .telemetry-lbl {
+      color: var(--text-dim);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    /* Main Grid */
+    .hud-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 2rem;
-      padding: 2rem 2.5rem;
-      max-width: 1700px;
+      grid-template-columns: 280px 1.4fr 1fr;
+      gap: 1.25rem;
+      padding: 1.25rem 2rem;
+      max-width: 1920px;
       margin: 0 auto;
       width: 100%;
     }
 
-    @media (max-width: 1100px) {
-      .dashboard { grid-template-columns: 1fr; }
+    @media (max-width: 1280px) {
+      .hud-grid { grid-template-columns: 1fr; }
     }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 1.75rem;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      letter-spacing: -0.2px;
-    }
-
-    /* Directive Input Box */
-    .input-section {
+    /* Glass Panels */
+    .hud-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      position: relative;
+      padding: 1.25rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      transition: border-color 0.3s;
     }
 
-    .input-container {
+    .hud-panel:hover {
+      border-color: var(--panel-border-bright);
+    }
+
+    /* Corner Tech Accents */
+    .hud-panel::before, .hud-panel::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+    }
+    .hud-panel::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid var(--cyan);
+      border-left: 2px solid var(--cyan);
+    }
+    .hud-panel::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid var(--cyan);
+      border-right: 2px solid var(--cyan);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 242, 254, 0.15);
+      padding-bottom: 0.65rem;
+    }
+
+    .panel-title {
+      font-family: var(--font-hud);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Holographic Visualizer Orb Canvas */
+    .orb-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 0;
       position: relative;
+    }
+
+    #orb-canvas {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+    }
+
+    .orb-status {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    /* Left Column: Domain Telemetry Gauges */
+    .domain-gauge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .domain-gauge-card {
+      background: rgba(0, 242, 254, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .domain-gauge-card:hover {
+      background: rgba(0, 242, 254, 0.06);
+      border-color: var(--cyan);
+    }
+
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-family: var(--font-hud);
+      color: #94a3b8;
+    }
+
+    .gauge-bar-bg {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .gauge-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      box-shadow: 0 0 8px var(--cyan);
+      width: 85%;
+    }
+
+    .gauge-meta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* Center: Neural Command Center */
+    .command-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+    }
+
+    .prompt-box-hud {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: rgba(3, 6, 12, 0.85);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .prompt-box-hud:focus-within {
+      border-color: var(--cyan);
+      box-shadow: var(--cyan-glow);
     }
 
     textarea#directive-input {
       width: 100%;
-      height: 110px;
-      background: rgba(11, 13, 19, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 1rem 1.25rem;
-      font-family: inherit;
-      font-size: 0.95rem;
+      height: 80px;
+      background: transparent;
+      border: none;
       color: #fff;
+      font-family: var(--font-main);
+      font-size: 0.95rem;
       resize: none;
       outline: none;
-      transition: all 0.2s ease;
+      line-height: 1.4;
     }
 
-    textarea#directive-input:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-
-    .button-row {
+    .prompt-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 0.75rem;
     }
 
-    .quick-actions {
+    .cyber-btn {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(157, 78, 221, 0.2));
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: var(--font-hud);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .cyber-btn:hover {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #03060c;
+      box-shadow: var(--cyan-glow);
+      transform: translateY(-1px);
+    }
+
+    .mic-hud-btn {
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid var(--panel-border);
+      color: var(--cyan);
+      border-radius: 6px;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .mic-hud-btn:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+    }
+
+    .mic-recording {
+      border-color: var(--red) !important;
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: #f87171 !important;
+      box-shadow: var(--red-glow) !important;
+      animation: alertPulse 1.2s infinite alternate;
+    }
+
+    .quick-chips {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
 
-    .quick-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: var(--text-dim);
-      padding: 0.35rem 0.75rem;
+    .chip-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chip-btn:hover {
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    /* Subtask Graph Nodes */
+    .task-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      max-height: 480px;
+      padding-right: 0.25rem;
+    }
+
+    .hud-node {
+      background: rgba(7, 13, 24, 0.85);
+      border: 1px solid rgba(0, 242, 254, 0.15);
+      border-left: 3px solid var(--cyan);
       border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .node-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-hud);
+      font-size: 0.75rem;
+    }
+
+    .node-title {
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      line-height: 1.35;
+    }
+
+    .node-out {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #94a3b8;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.65rem;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      border-left: 2px solid rgba(0, 242, 254, 0.4);
+    }
+
+    /* Right Column: Mission Debrief */
+    .debrief-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .debrief-card {
+      background: linear-gradient(145deg, rgba(157, 78, 221, 0.1), rgba(0, 242, 254, 0.05));
+      border: 1px solid rgba(157, 78, 221, 0.3);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .debrief-summary {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #f1f5f9;
+    }
+
+    .highlights-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .highlight-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      line-height: 1.35;
+    }
+
+    .highlight-row span:first-child {
+      color: var(--cyan);
+      font-weight: bold;
+    }
+
+    .strategic-advice-hud {
+      background: rgba(0, 242, 254, 0.06);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 0.85rem;
+      font-size: 0.8rem;
+      color: #a5f3fc;
+      line-height: 1.45;
+      font-family: var(--font-mono);
+    }
+
+    /* Mission Logs Feed */
+    .mission-logs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
       font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .quick-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border-color: var(--accent-cyan);
+    .log-item:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 242, 254, 0.04);
     }
 
-    .send-btn {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #0b0d13;
-      border: none;
-      padding: 0.75rem 1.6rem;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .log-time {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
     }
 
-    .send-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
-    }
-
-    /* Subtask Graph & Live Execution Feed */
-    .task-graph {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    .task-item {
-      background: rgba(11, 13, 19, 0.6);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      transition: all 0.2s;
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .task-domain {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .domain-smart_home { color: #10b981; }
-    .domain-projects { color: #3b82f6; }
-    .domain-marketing { color: #ec4899; }
-    .domain-assistant { color: #06b6d4; }
-    .domain-system_control { color: #a3e635; }
-    .domain-adhoc { color: #f59e0b; }
-
-    .task-status {
-      font-size: 0.75rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 6px;
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .task-instruction {
-      font-size: 0.9rem;
-      color: #e2e8f0;
-      line-height: 1.4;
-    }
-
-    .task-output {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #94a3b8;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.75rem;
-      border-radius: 8px;
-      border-left: 3px solid var(--accent-cyan);
-      white-space: pre-wrap;
-    }
-
-    /* Safety Alert Banner */
-    .safety-alert {
+    /* Safety Alert Laser Modal */
+    .safety-laser-modal {
       display: none;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.5);
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(3, 6, 12, 0.85);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .safety-box {
+      background: rgba(20, 8, 12, 0.95);
+      border: 2px solid var(--red);
+      box-shadow: var(--red-glow);
       border-radius: 12px;
-      padding: 1.25rem;
+      padding: 2rem;
+      max-width: 550px;
+      width: 90%;
+      display: flex;
       flex-direction: column;
-      gap: 0.85rem;
-      animation: alertPulse 2s infinite alternate;
+      gap: 1.25rem;
+      animation: alertPulse 1.5s infinite alternate;
     }
 
     @keyframes alertPulse {
-      0% { border-color: rgba(239, 68, 68, 0.5); }
-      100% { border-color: rgba(239, 68, 68, 0.9); }
+      0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+      100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.8); }
     }
 
-    .safety-title {
-      font-weight: 700;
-      color: #f87171;
+    .safety-header {
+      font-family: var(--font-hud);
+      font-size: 1.1rem;
+      color: var(--red);
+      letter-spacing: 2px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-
-    .safety-actions {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .btn-approve {
-      background: var(--danger);
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .btn-abort {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: 1px solid var(--card-border);
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    /* CEO Executive Debrief Card */
-    .briefing-card {
-      background: linear-gradient(135deg, rgba(30, 20, 50, 0.6), rgba(15, 25, 45, 0.6));
-      border: 1px solid rgba(157, 78, 221, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .briefing-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-    }
-
-    .briefing-summary {
-      font-size: 0.98rem;
-      line-height: 1.6;
-      color: #f1f5f9;
-      font-weight: 500;
-    }
-
-    .highlights-list {
-      display: flex;
-      flex-direction: column;
       gap: 0.6rem;
-    }
-
-    .highlight-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: 0.87rem;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
-
-    .highlight-icon {
-      color: var(--accent-cyan);
-      font-weight: bold;
-    }
-
-    .ceo-advice-box {
-      background: rgba(0, 242, 254, 0.06);
-      border: 1px solid rgba(0, 242, 254, 0.2);
-      border-radius: 10px;
-      padding: 1rem;
-      font-size: 0.85rem;
-      color: #a5f3fc;
-      line-height: 1.5;
-    }
-
-    /* Past Directives Feed */
-    .history-feed {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      max-height: 350px;
-      overflow-y: auto;
-      padding-right: 0.25rem;
-    }
-
-    .history-item {
-      background: rgba(11, 13, 19, 0.5);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 0.85rem 1rem;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .history-item:hover {
-      border-color: var(--accent-cyan);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .history-meta {
-      display: flex;
-      justify-content: space-between;
-      color: var(--text-dim);
-      font-size: 0.72rem;
-      margin-bottom: 0.35rem;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">
-      <div class="brand-logo">L</div>
-      <div>
-        <div class="brand-title">LUNA</div>
-        <div class="brand-subtitle">Autonomous Chief Executive AI</div>
+  <!-- Safety Laser Modal -->
+  <div class="safety-laser-modal" id="safety-modal">
+    <div class="safety-box">
+      <div class="safety-header">
+        <span>⚠️</span> CRITICAL ACTION VERIFICATION REQUIRED
+      </div>
+      <div id="safety-modal-reason" style="font-family: var(--font-mono); font-size: 0.85rem; color: #fecaca; line-height: 1.45;">
+        Security gate triggered.
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button class="cyber-btn" onclick="confirmSafety(true)" style="border-color: var(--red); color: #f87171;">
+          AUTHORIZE OVERRIDE
+        </button>
+        <button class="chip-btn" onclick="confirmSafety(false)" style="padding: 0.6rem 1rem;">
+          ABORT PROTOCOL
+        </button>
       </div>
     </div>
-    <div class="status-pill">
-      <div class="status-dot"></div>
-      <span id="connection-status">Online • Executive Core Active</span>
+  </div>
+
+  <!-- HUD Header -->
+  <header>
+    <div class="brand-hud">
+      <div class="hud-reactor">
+        <div class="hud-reactor-core"></div>
+      </div>
+      <div>
+        <div class="brand-title-hud">LUNA // HUD</div>
+        <div class="brand-tag">CHIEF EXECUTIVE AGENTIC OS</div>
+      </div>
+    </div>
+
+    <div class="telemetry-bar">
+      <div class="telemetry-item">
+        <span class="telemetry-val" id="hud-clock">00:00:00</span>
+        <span class="telemetry-lbl">SYSTEM TIME</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-val" style="color: var(--green);">NOMINAL</span>
+        <span class="telemetry-lbl">CORE PROTOCOL</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-val" id="ws-indicator">ONLINE</span>
+        <span class="telemetry-lbl">WEBSOCKET FEED</span>
+      </div>
     </div>
   </header>
 
-  <main class="dashboard">
-    <!-- Left Column: Command & Operations -->
-    <div style="display: flex; flex-direction: column; gap: 1.75rem;">
-      
-      <!-- Input Card -->
-      <div class="card input-section">
-        <div class="card-title">
-          <span>⚡</span> Founder Command Center
+  <!-- HUD Grid -->
+  <main class="hud-grid">
+
+    <!-- LEFT: System Telemetry & Domain Status -->
+    <div class="hud-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>❖</span> NEURAL TELEMETRY
+        </div>
+        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">v3.5</span>
+      </div>
+
+      <!-- Holographic Audio Reactor Orb -->
+      <div class="orb-container">
+        <canvas id="orb-canvas" width="140" height="140"></canvas>
+        <div class="orb-status" id="orb-label">CORE READY • 100%</div>
+      </div>
+
+      <!-- Live Domain Gauges -->
+      <div class="domain-gauge-list">
+        
+        <div class="domain-gauge-card">
+          <div class="gauge-header">
+            <span>🏠 SMART HOME MESH</span>
+            <span style="color: var(--green);">ONLINE</span>
+          </div>
+          <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width: 92%;"></div></div>
+          <div class="gauge-meta" id="telemetry-sh">Office: 30% • Climate: 22°C • Locked</div>
         </div>
 
-        <div class="input-container">
-          <textarea id="directive-input" placeholder="Issue a high-level mandate or speak to LUNA (e.g. 'Open Notepad', 'Run command Get-Process', 'Read my ChatGPT chats', or speak in English / Sinhala)..."></textarea>
+        <div class="domain-gauge-card">
+          <div class="gauge-header">
+            <span>💻 TECH & GIT PIPELINE</span>
+            <span style="color: #3b82f6;">PASSING</span>
+          </div>
+          <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width: 94%; background: #3b82f6;"></div></div>
+          <div class="gauge-meta" id="telemetry-git">Branch: master • CI: 94.2%</div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: -0.25rem;">
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <button class="quick-btn" id="mic-btn" onclick="toggleVoiceInput()" style="background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); color: #00f2fe; font-weight: 600;">
-              <span id="mic-icon">🎙️</span> <span id="mic-label">Speak (Voice AI)</span>
+        <div class="domain-gauge-card">
+          <div class="gauge-header">
+            <span>📈 GROWTH & SOCIAL REACH</span>
+            <span style="color: #ec4899;">+6.4%</span>
+          </div>
+          <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width: 88%; background: #ec4899;"></div></div>
+          <div class="gauge-meta">184.5K 7D Impressions • Queue nominal</div>
+        </div>
+
+        <div class="domain-gauge-card">
+          <div class="gauge-header">
+            <span>📋 KNOWLEDGE BASE</span>
+            <span style="color: var(--cyan);">SYNCED</span>
+          </div>
+          <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width: 100%;"></div></div>
+          <div class="gauge-meta">ChatGPT exports & projects indexed</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CENTER: Command Center & Subtask Stream -->
+    <div class="hud-panel" style="flex: 1;">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>⚡</span> NEURAL COMMAND CONSOLE
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim);" id="task-count-hud">
+          READY FOR DIRECTIVE
+        </div>
+      </div>
+
+      <!-- Prompt Input Deck -->
+      <div class="prompt-box-hud">
+        <textarea id="directive-input" placeholder="Initiate directive (e.g. 'Create folder ProjectLuna on Desktop', 'Open Notepad and YouTube', 'Read my ChatGPT chats', or speak in English/Sinhala)..."></textarea>
+        
+        <div class="prompt-actions">
+          <div style="display: flex; gap: 0.6rem; align-items: center;">
+            <button class="mic-hud-btn" id="mic-btn" onclick="toggleVoiceInput()">
+              <span id="mic-icon">🎙️</span> <span id="mic-label">VOICE AI</span>
             </button>
-            <label style="font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
-              <input type="checkbox" id="voice-reply-toggle" checked style="accent-color: var(--accent-cyan);">
-              <span>🔊 Voice Reply (TTS)</span>
+            <label style="font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-family: var(--font-mono);">
+              <input type="checkbox" id="voice-reply-toggle" checked style="accent-color: var(--cyan);">
+              <span>🔊 VOICE REPLY</span>
             </label>
           </div>
-          <span style="font-size: 0.75rem; color: var(--text-dim);">English / Sinhala / Singlish supported</span>
-        </div>
 
-        <div class="quick-actions">
-          <button class="quick-btn" onclick="setDirective('Read my ChatGPT chats and summarize all my pending projects')">📋 ChatGPT & Projects</button>
-          <button class="quick-btn" onclick="setDirective('Open Notepad and open Downloads folder')">🖥️ Open Desktop Apps</button>
-          <button class="quick-btn" onclick="setDirective('Run command: Get-Process | Select-Object -First 5 ProcessName, CPU')">⚡ Run PowerShell Command</button>
-          <button class="quick-btn" onclick="setDirective('Dim office lights to 30%, inspect build status, and prep launch tweet')">💡 Office & Launch</button>
-          <button class="quick-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger</button>
-        </div>
-
-        <div class="button-row">
-          <span style="font-size: 0.78rem; color: var(--text-dim);" id="subtask-count">Ready for directive</span>
-          <button class="send-btn" id="submit-btn" onclick="submitDirective()">
-            <span>Execute Mandate</span>
-            <span>→</span>
+          <button class="cyber-btn" id="submit-btn" onclick="submitDirective()">
+            <span>TRANSMIT</span>
+            <span>➔</span>
           </button>
         </div>
       </div>
 
-      <!-- Safety Confirmation Card (Shown dynamically) -->
-      <div class="safety-alert" id="safety-card">
-        <div class="safety-title">
-          <span>⚠️</span> FOUNDER SIGN-OFF REQUIRED
-        </div>
-        <div id="safety-reason" style="font-size: 0.88rem; color: #fecaca; line-height: 1.4;">
-          LUNA flagged high-risk operations in your plan.
-        </div>
-        <div class="safety-actions">
-          <button class="btn-approve" onclick="confirmSafety(true)">Authorize Critical Execution</button>
-          <button class="btn-abort" onclick="confirmSafety(false)">Abort Critical Tasks</button>
-        </div>
+      <!-- Quick Action Holographic Chips -->
+      <div class="quick-chips">
+        <button class="chip-btn" onclick="setDirective('Create a folder called LunaDemo on Desktop')">📁 Create Folder on Desktop</button>
+        <button class="chip-btn" onclick="setDirective('Read my ChatGPT chats and tell me what are my pending projects')">📋 Audit ChatGPT Projects</button>
+        <button class="chip-btn" onclick="setDirective('Open Notepad and open Downloads folder')">🖥️ Open Notepad & Downloads</button>
+        <button class="chip-btn" onclick="setDirective('Run command: Get-Process | Select-Object -First 5 ProcessName, CPU')">⚡ Run PowerShell Command</button>
+        <button class="chip-btn" onclick="setDirective('Dim office lights to 30%, inspect git status, and prep launch tweet')">💡 Office & Launch Ops</button>
+        <button class="chip-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger</button>
       </div>
 
-      <!-- Subtask Execution Graph -->
-      <div class="card">
-        <div class="card-title">
-          <span>🔀</span> Autonomous Task Delegation Graph
-        </div>
-        <div class="task-graph" id="task-graph">
-          <div style="color: var(--text-dim); font-size: 0.85rem; font-style: italic;">
-            No active operations. Subtasks will appear here dynamically as LUNA decomposes directives.
-          </div>
+      <!-- Delegated Subtask Graph Nodes -->
+      <div style="font-family: var(--font-hud); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 1px; margin-top: 0.5rem;">
+        // ACTIVE SUBTASK STREAM
+      </div>
+      <div class="task-stream" id="task-stream">
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); padding: 1rem 0;">
+          Awaiting Founder directive. Subtasks will form a dynamic neural graph here.
         </div>
       </div>
 
     </div>
 
-    <!-- Right Column: Executive Debrief & History -->
-    <div style="display: flex; flex-direction: column; gap: 1.75rem;">
-      
-      <!-- LUNA Executive Briefing Card -->
-      <div class="card briefing-card">
-        <div class="card-title" style="color: var(--accent-cyan);">
-          <span>✦</span> LUNA Executive CEO Briefing
+    <!-- RIGHT: Executive Mission Debrief & Memory Logs -->
+    <div class="hud-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>✦</span> EXECUTIVE MISSION DEBRIEF
         </div>
+        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--purple);">CEO INTEL</span>
+      </div>
 
-        <div class="briefing-summary" id="brief-summary">
-          Standing by, Founder. Awaiting your mandate.
-        </div>
+      <div class="debrief-deck">
+        <div class="debrief-card">
+          <div class="debrief-summary" id="debrief-summary">
+            Standing by, Founder. Neural synapses aligned.
+          </div>
 
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <div style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Highlights:</div>
-          <div class="highlights-list" id="brief-highlights">
-            <div style="color: var(--text-dim); font-size: 0.83rem;">-</div>
+          <div class="highlights-box" id="debrief-highlights">
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">No active mission.</div>
+          </div>
+
+          <div class="strategic-advice-hud" id="debrief-advice">
+            <strong>CEO INSIGHT:</strong> All domain subsystems nominal. Ready to scale founder directives.
           </div>
         </div>
 
-        <div class="ceo-advice-box" id="brief-advice">
-          <strong>CEO Insight:</strong> All domain channels nominal. Ready to scale operations.
+        <div class="panel-title" style="font-size: 0.75rem; margin-top: 0.5rem;">
+          <span>🏛️</span> MISSION ARCHIVE (SQLITE)
         </div>
-      </div>
-
-      <!-- Persistent Memory History -->
-      <div class="card">
-        <div class="card-title">
-          <span>🏛️</span> Operational Memory & History
-        </div>
-        <div class="history-feed" id="history-feed">
-          <div style="color: var(--text-dim); font-size: 0.85rem;">Loading past sessions...</div>
+        <div class="mission-logs" id="mission-logs">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">Loading past mission archives...</div>
         </div>
       </div>
 
     </div>
+
   </main>
 
   <script>
     let ws = null;
+    let isRecording = false;
+    let recognition = null;
+    let orbState = 'idle'; // 'idle', 'listening', 'processing', 'speaking'
 
+    // Real-Time System Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('hud-clock').innerText = now.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Canvas Holographic Visualizer Orb
+    const canvas = document.getElementById('orb-canvas');
+    const ctx = canvas.getContext('2d');
+    let angle = 0;
+
+    function drawOrb() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      angle += orbState === 'processing' ? 0.08 : (orbState === 'listening' ? 0.05 : 0.02);
+
+      // Outer Pulsing Glow
+      const pulse = Math.sin(Date.now() * 0.003) * 6;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 48 + pulse, 0, Math.PI * 2);
+      ctx.fillStyle = orbState === 'listening' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 242, 254, 0.1)';
+      ctx.fill();
+
+      // Rotating Concentric Sci-Fi Rings
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      ctx.strokeStyle = orbState === 'listening' ? '#ef4444' : '#00f2fe';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 42, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-angle * 1.5);
+      ctx.strokeStyle = '#9d4edd';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 32, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Core Glowing Particle
+      ctx.beginPath();
+      ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+      const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 14);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(1, orbState === 'listening' ? '#ef4444' : '#00f2fe');
+      ctx.fillStyle = grad;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = orbState === 'listening' ? '#ef4444' : '#00f2fe';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      requestAnimationFrame(drawOrb);
+    }
+    drawOrb();
+
+    // WebSocket Stream
     function connectWebSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/ws/stream`;
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        document.getElementById('connection-status').innerText = 'Online • WebSocket Streaming';
-        loadHistory();
+        document.getElementById('ws-indicator').innerText = 'LINKED';
+        document.getElementById('ws-indicator').style.color = '#10b981';
+        loadMissionLogs();
       };
 
       ws.onmessage = (event) => {
@@ -576,8 +892,9 @@
       };
 
       ws.onclose = () => {
-        document.getElementById('connection-status').innerText = 'Reconnecting...';
-        setTimeout(connectWebSocket, 3000);
+        document.getElementById('ws-indicator').innerText = 'RECONNECTING';
+        document.getElementById('ws-indicator').style.color = '#f59e0b';
+        setTimeout(connectWebSocket, 2500);
       };
     }
 
@@ -589,14 +906,15 @@
       const input = document.getElementById('directive-input').value.trim();
       if (!input) return;
 
+      orbState = 'processing';
+      document.getElementById('orb-label').innerText = 'NEURAL PROCESSING';
       document.getElementById('submit-btn').disabled = true;
-      document.getElementById('task-graph').innerHTML = '<div style="color: var(--accent-cyan); font-size: 0.88rem;">✦ LUNA analyzing directive and formulating operational graph...</div>';
-      document.getElementById('brief-summary').innerText = 'LUNA formulating operational plan...';
+      document.getElementById('task-stream').innerHTML = '<div style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.8rem;">✦ LUNA compiling intent decomposition graph...</div>';
+      document.getElementById('debrief-summary').innerText = 'Analyzing operational parameters...';
 
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'directive', text: input }));
       } else {
-        // Fallback to REST
         fetch('/api/directive', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -606,12 +924,14 @@
         .then(data => {
           renderCompleteSession(data);
           document.getElementById('submit-btn').disabled = false;
+          orbState = 'idle';
+          document.getElementById('orb-label').innerText = 'CORE READY • 100%';
         });
       }
     }
 
     function confirmSafety(approved) {
-      document.getElementById('safety-card').style.display = 'none';
+      document.getElementById('safety-modal').style.display = 'none';
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'confirm', approved: approved }));
       }
@@ -621,13 +941,13 @@
       const { stage, data } = msg;
 
       if (stage === 'planning') {
-        document.getElementById('subtask-count').innerText = `${data.subtasks.length} subtasks planned`;
+        document.getElementById('task-count-hud').innerText = `${data.subtasks.length} SUBTASKS DISPATCHED`;
         renderTaskGraph(data.subtasks);
       } 
       else if (stage === 'risk_check') {
         if (data.requires_confirmation) {
-          document.getElementById('safety-reason').innerText = data.confirmation_reason;
-          document.getElementById('safety-card').style.display = 'flex';
+          document.getElementById('safety-modal-reason').innerText = data.confirmation_reason;
+          document.getElementById('safety-modal').style.display = 'flex';
         }
       } 
       else if (stage === 'task_complete') {
@@ -636,121 +956,68 @@
       else if (stage === 'synthesis') {
         renderDebrief(data);
         document.getElementById('submit-btn').disabled = false;
-        loadHistory();
+        orbState = 'idle';
+        document.getElementById('orb-label').innerText = 'MISSION COMPLETE';
+        loadMissionLogs();
       }
     }
 
     function renderTaskGraph(subtasks) {
-      const container = document.getElementById('task-graph');
+      const container = document.getElementById('task-stream');
       container.innerHTML = '';
       subtasks.forEach(st => {
         const div = document.createElement('div');
-        div.className = 'task-item';
-        div.id = `card-${st.task_id}`;
+        div.className = 'hud-node';
+        div.id = `node-${st.task_id}`;
         div.innerHTML = `
-          <div class="task-header">
-            <span class="task-domain domain-${st.target_domain}">${getDomainIcon(st.target_domain)} ${st.target_domain}</span>
-            <span class="task-status" id="status-${st.task_id}">Processing</span>
+          <div class="node-header">
+            <span style="color: ${getDomainColor(st.target_domain)};">${getDomainIcon(st.target_domain)} ${st.target_domain.toUpperCase()}</span>
+            <span style="font-family: var(--font-mono); color: #f59e0b;" id="status-${st.task_id}">EXECUTING</span>
           </div>
-          <div class="task-instruction">${st.instruction}</div>
-          <div class="task-output" id="output-${st.task_id}">Awaiting specialist execution...</div>
+          <div class="node-title">${st.instruction}</div>
+          <div class="node-out" id="out-${st.task_id}">Awaiting specialist telemetry...</div>
         `;
         container.appendChild(div);
       });
     }
 
     function updateTaskOutput(taskId, output, status) {
-      const outElem = document.getElementById(`output-${taskId}`);
+      const outElem = document.getElementById(`out-${taskId}`);
       const statusElem = document.getElementById(`status-${taskId}`);
       if (outElem) outElem.innerText = output;
       if (statusElem) {
-        statusElem.innerText = status === 'success' ? 'Completed' : status;
-        statusElem.style.color = status === 'success' ? '#10b981' : '#f59e0b';
+        statusElem.innerText = status.toUpperCase();
+        statusElem.style.color = status === 'success' ? '#10b981' : '#ef4444';
       }
-    }
-
-    let isRecording = false;
-    let recognition = null;
-
-    function toggleVoiceInput() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert("Speech Recognition is not supported by your browser. Please use Chrome or Edge.");
-        return;
-      }
-
-      if (isRecording) {
-        if (recognition) recognition.stop();
-        isRecording = false;
-        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
-        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
-        return;
-      }
-
-      recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US'; // Also understands accented speech and Singlish
-
-      recognition.onstart = () => {
-        isRecording = true;
-        document.getElementById('mic-label').innerText = 'Listening... Speak now';
-        document.getElementById('mic-btn').style.background = 'rgba(239, 68, 68, 0.25)';
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('directive-input').value = transcript;
-        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
-        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
-        isRecording = false;
-        submitDirective();
-      };
-
-      recognition.onerror = (e) => {
-        console.error("Speech error:", e);
-        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
-        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
-        isRecording = false;
-      };
-
-      recognition.onend = () => {
-        isRecording = false;
-        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
-        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
-      };
-
-      recognition.start();
-    }
-
-    function speakText(text) {
-      const toggle = document.getElementById('voice-reply-toggle');
-      if (!toggle || !toggle.checked || !window.speechSynthesis) return;
-
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.05;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
     }
 
     function renderDebrief(report) {
-      document.getElementById('brief-summary').innerText = report.executive_summary;
-      const hList = document.getElementById('brief-highlights');
+      document.getElementById('debrief-summary').innerText = report.executive_summary;
+      const hList = document.getElementById('debrief-highlights');
       hList.innerHTML = '';
       (report.highlights || []).forEach(h => {
-        const item = document.createElement('div');
-        item.className = 'highlight-item';
-        item.innerHTML = `<span class="highlight-icon">✓</span><span>${h}</span>`;
-        hList.appendChild(item);
+        const row = document.createElement('div');
+        row.className = 'highlight-row';
+        row.innerHTML = `<span>➔</span><span>${h}</span>`;
+        hList.appendChild(row);
       });
 
       if (report.proactive_advice) {
-        document.getElementById('brief-advice').innerHTML = `<strong>CEO Insight:</strong> ${report.proactive_advice}`;
+        document.getElementById('debrief-advice').innerHTML = `<strong>CEO STRATEGIC ADVICE:</strong> ${report.proactive_advice}`;
       }
 
-      // Voice output
       speakText(report.executive_summary);
+    }
+
+    function getDomainColor(domain) {
+      switch (domain) {
+        case 'smart_home': return '#10b981';
+        case 'projects': return '#3b82f6';
+        case 'marketing': return '#ec4899';
+        case 'assistant': return '#06b6d4';
+        case 'system_control': return '#a3e635';
+        default: return '#f59e0b';
+      }
     }
 
     function getDomainIcon(domain) {
@@ -764,27 +1031,98 @@
       }
     }
 
-    async function loadHistory() {
+    // Voice Input (Web Speech Recognition)
+    function toggleVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech Recognition not supported in this browser. Please use Chrome or Edge.");
+        return;
+      }
+
+      const micBtn = document.getElementById('mic-btn');
+      if (isRecording) {
+        if (recognition) recognition.stop();
+        isRecording = false;
+        orbState = 'idle';
+        document.getElementById('mic-label').innerText = 'VOICE AI';
+        micBtn.classList.remove('mic-recording');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        isRecording = true;
+        orbState = 'listening';
+        document.getElementById('orb-label').innerText = 'LISTENING...';
+        document.getElementById('mic-label').innerText = 'LISTENING';
+        micBtn.classList.add('mic-recording');
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('directive-input').value = transcript;
+        isRecording = false;
+        orbState = 'idle';
+        document.getElementById('mic-label').innerText = 'VOICE AI';
+        micBtn.classList.remove('mic-recording');
+        submitDirective();
+      };
+
+      recognition.onerror = () => {
+        isRecording = false;
+        orbState = 'idle';
+        document.getElementById('mic-label').innerText = 'VOICE AI';
+        micBtn.classList.remove('mic-recording');
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        orbState = 'idle';
+        document.getElementById('mic-label').innerText = 'VOICE AI';
+        micBtn.classList.remove('mic-recording');
+      };
+
+      recognition.start();
+    }
+
+    // Voice Output (Speech Synthesis)
+    function speakText(text) {
+      const toggle = document.getElementById('voice-reply-toggle');
+      if (!toggle || !toggle.checked || !window.speechSynthesis) return;
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Load Mission Archives from SQLite
+    async function loadMissionLogs() {
       try {
         const res = await fetch('/api/history');
         const history = await res.json();
-        const feed = document.getElementById('history-feed');
+        const feed = document.getElementById('mission-logs');
         if (!history || history.length === 0) {
-          feed.innerHTML = '<div style="color: var(--text-dim); font-size: 0.83rem;">No past sessions recorded yet.</div>';
+          feed.innerHTML = '<div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">No previous missions logged.</div>';
           return;
         }
 
         feed.innerHTML = '';
         history.forEach(item => {
           const div = document.createElement('div');
-          div.className = 'history-item';
+          div.className = 'log-item';
           const time = new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           div.innerHTML = `
-            <div class="history-meta">
-              <span>${time}</span>
-              <span style="color: #10b981;">✓ ${item.status}</span>
+            <div style="display: flex; justify-content: space-between;">
+              <span class="log-time">${time}</span>
+              <span style="color: #10b981; font-family: var(--font-mono); font-size: 0.7rem;">// ${item.status.toUpperCase()}</span>
             </div>
-            <div style="font-weight: 600; color: #fff;">${item.founder_input}</div>
+            <div style="font-weight: 600; color: #fff; margin-top: 0.25rem;">${item.founder_input}</div>
           `;
           div.onclick = () => {
             if (item.report) renderDebrief(item.report);
