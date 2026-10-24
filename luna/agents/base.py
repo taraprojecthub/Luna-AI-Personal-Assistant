@@ -17,10 +17,10 @@ class BaseAgent(ABC):
         """Execute a delegated subtask in this specialist's domain."""
         pass
 
-    async def call_llm(self, prompt: str) -> str:
-        """Helper to invoke worker-tier LLM for domain reasoning with graceful fallback."""
+    async def call_llm(self, prompt: str) -> Optional[str]:
+        """Helper to invoke worker-tier LLM for domain reasoning. Returns None if unauthenticated or error."""
         if not self.client:
-            return f"[{self.name}] Executed successfully: {prompt[:80]}"
+            return None
         
         try:
             response = await self.client.chat.completions.create(
@@ -31,6 +31,7 @@ class BaseAgent(ABC):
                 ],
                 temperature=0.7,
             )
-            return response.choices[0].message.content or ""
+            return response.choices[0].message.content
         except Exception:
-            return f"[{self.name}] Operational check completed: verified parameters and applied adjustments."
+            # LLM authentication or connection error - allow caller to use connector output
+            return None
