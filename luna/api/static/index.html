@@ -28,6 +28,20 @@
       --font-mono: 'JetBrains Mono', monospace;
     }
 
+    /* Light Theme (Cybernetic Clean Lab HUD) */
+    body.light-theme {
+      --bg: #f1f5f9;
+      --panel-bg: rgba(255, 255, 255, 0.85);
+      --panel-border: rgba(2, 132, 199, 0.25);
+      --panel-border-bright: rgba(2, 132, 199, 0.65);
+      --cyan: #0284c7;
+      --cyan-glow: 0 0 20px rgba(2, 132, 199, 0.3);
+      --purple: #7c3aed;
+      --purple-glow: 0 0 20px rgba(124, 58, 237, 0.3);
+      --text: #0f172a;
+      --text-dim: #64748b;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -41,9 +55,18 @@
       background-image: 
         radial-gradient(circle at 50% 10%, rgba(0, 242, 254, 0.08) 0%, transparent 60%),
         radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.06) 0%, transparent 50%),
-        linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+        linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-theme {
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(2, 132, 199, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+        linear-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
     }
 
     /* Scanline Overlay */
@@ -55,7 +78,10 @@
       background-size: 100% 4px;
       z-index: 999;
       pointer-events: none;
-      opacity: 0.6;
+      opacity: 0.5;
+    }
+    body.light-theme::before {
+      opacity: 0.1;
     }
 
     /* HUD Topbar */
@@ -70,6 +96,11 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: background 0.3s ease;
+    }
+
+    body.light-theme header {
+      background: rgba(248, 250, 252, 0.92);
     }
 
     .brand-hud {
@@ -123,6 +154,13 @@
       text-shadow: var(--cyan-glow);
     }
 
+    body.light-theme .brand-title-hud {
+      background: linear-gradient(90deg, #0f172a, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+    }
+
     .brand-tag {
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -133,7 +171,7 @@
     .telemetry-bar {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.25rem;
       font-family: var(--font-mono);
       font-size: 0.78rem;
     }
@@ -159,7 +197,7 @@
     .hud-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: 280px 1.4fr 1fr;
+      grid-template-columns: 290px 1.4fr 1fr;
       gap: 1.25rem;
       padding: 1.25rem 2rem;
       max-width: 1920px;
@@ -179,18 +217,21 @@
       position: relative;
       padding: 1.25rem;
       backdrop-filter: blur(20px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
+    }
+
+    body.light-theme .hud-panel {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     }
 
     .hud-panel:hover {
       border-color: var(--panel-border-bright);
     }
 
-    /* Corner Tech Accents */
     .hud-panel::before, .hud-panel::after {
       content: "";
       position: absolute;
@@ -251,6 +292,7 @@
       letter-spacing: 1px;
       margin-top: 0.5rem;
       text-transform: uppercase;
+      font-weight: 600;
     }
 
     /* Left Column: Domain Telemetry Gauges */
@@ -271,6 +313,11 @@
       transition: all 0.2s;
     }
 
+    body.light-theme .domain-gauge-card {
+      background: rgba(2, 132, 199, 0.04);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
     .domain-gauge-card:hover {
       background: rgba(0, 242, 254, 0.06);
       border-color: var(--cyan);
@@ -282,7 +329,7 @@
       align-items: center;
       font-size: 0.75rem;
       font-family: var(--font-hud);
-      color: #94a3b8;
+      color: var(--text-dim);
     }
 
     .gauge-bar-bg {
@@ -291,6 +338,9 @@
       background: rgba(255, 255, 255, 0.08);
       border-radius: 2px;
       overflow: hidden;
+    }
+    body.light-theme .gauge-bar-bg {
+      background: rgba(0, 0, 0, 0.08);
     }
 
     .gauge-bar-fill {
@@ -307,13 +357,6 @@
     }
 
     /* Center: Neural Command Center */
-    .command-deck {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      flex: 1;
-    }
-
     .prompt-box-hud {
       display: flex;
       flex-direction: column;
@@ -323,6 +366,12 @@
       border-radius: 10px;
       padding: 1rem;
       position: relative;
+      transition: background 0.3s;
+    }
+
+    body.light-theme .prompt-box-hud {
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.3);
     }
 
     .prompt-box-hud:focus-within {
@@ -335,7 +384,7 @@
       height: 80px;
       background: transparent;
       border: none;
-      color: #fff;
+      color: var(--text);
       font-family: var(--font-main);
       font-size: 0.95rem;
       resize: none;
@@ -349,6 +398,9 @@
       align-items: center;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
       padding-top: 0.75rem;
+    }
+    body.light-theme .prompt-actions {
+      border-top-color: rgba(0, 0, 0, 0.06);
     }
 
     .cyber-btn {
@@ -390,11 +442,6 @@
       transition: all 0.2s;
     }
 
-    .mic-hud-btn:hover {
-      border-color: var(--cyan);
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
-    }
-
     .mic-recording {
       border-color: var(--red) !important;
       background: rgba(239, 68, 68, 0.2) !important;
@@ -412,13 +459,19 @@
     .chip-btn {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #94a3b8;
+      color: var(--text-dim);
       font-size: 0.72rem;
       font-family: var(--font-mono);
-      padding: 0.3rem 0.65rem;
+      padding: 0.35rem 0.75rem;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s;
+    }
+
+    body.light-theme .chip-btn {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #475569;
     }
 
     .chip-btn:hover {
@@ -449,6 +502,12 @@
       animation: fadeIn 0.3s ease;
     }
 
+    body.light-theme .hud-node {
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.2);
+      border-left: 3px solid var(--cyan);
+    }
+
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     .node-header {
@@ -460,7 +519,7 @@
     }
 
     .node-title {
-      color: #cbd5e1;
+      color: var(--text);
       font-size: 0.85rem;
       line-height: 1.35;
     }
@@ -468,12 +527,17 @@
     .node-out {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: #94a3b8;
+      color: var(--text-dim);
       background: rgba(0, 0, 0, 0.4);
       padding: 0.65rem;
       border-radius: 4px;
       white-space: pre-wrap;
       border-left: 2px solid rgba(0, 242, 254, 0.4);
+    }
+
+    body.light-theme .node-out {
+      background: #f1f5f9;
+      color: #334155;
     }
 
     /* Right Column: Mission Debrief */
@@ -493,10 +557,15 @@
       gap: 0.85rem;
     }
 
+    body.light-theme .debrief-card {
+      background: linear-gradient(145deg, rgba(124, 58, 237, 0.08), rgba(2, 132, 199, 0.05));
+      border-color: rgba(124, 58, 237, 0.25);
+    }
+
     .debrief-summary {
       font-size: 0.92rem;
       line-height: 1.5;
-      color: #f1f5f9;
+      color: var(--text);
     }
 
     .highlights-box {
@@ -510,7 +579,7 @@
       align-items: flex-start;
       gap: 0.5rem;
       font-size: 0.82rem;
-      color: #cbd5e1;
+      color: var(--text);
       line-height: 1.35;
     }
 
@@ -525,7 +594,7 @@
       border-radius: 6px;
       padding: 0.85rem;
       font-size: 0.8rem;
-      color: #a5f3fc;
+      color: var(--cyan);
       line-height: 1.45;
       font-family: var(--font-mono);
     }
@@ -547,6 +616,11 @@
       font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
+    }
+
+    body.light-theme .log-item {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
     }
 
     .log-item:hover {
@@ -600,6 +674,13 @@
       align-items: center;
       gap: 0.6rem;
     }
+
+    /* Wake Word Live Ripple Indicator */
+    .wake-active-glow {
+      border-color: var(--green) !important;
+      color: var(--green) !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4) !important;
+    }
   </style>
 </head>
 <body>
@@ -637,6 +718,16 @@
     </div>
 
     <div class="telemetry-bar">
+      <!-- Theme Switcher Button -->
+      <button class="chip-btn" id="theme-btn" onclick="toggleTheme()" title="Switch Dark / Light HUD">
+        <span id="theme-icon">🌙</span> <span id="theme-label">DARK</span>
+      </button>
+
+      <!-- Wake Word Detection Button -->
+      <button class="chip-btn wake-active-glow" id="wake-toggle-btn" onclick="toggleWakeWordListener()" title="Say 'Luna' anytime to wake up">
+        <span id="wake-icon">🎙️</span> <span id="wake-label">WAKE: SAY "LUNA"</span>
+      </button>
+
       <div class="telemetry-item">
         <span class="telemetry-val" id="hud-clock">00:00:00</span>
         <span class="telemetry-lbl">SYSTEM TIME</span>
@@ -725,7 +816,7 @@
 
       <!-- Prompt Input Deck -->
       <div class="prompt-box-hud">
-        <textarea id="directive-input" placeholder="Initiate directive (e.g. 'Create folder ProjectLuna on Desktop', 'Open Notepad and YouTube', 'Read my ChatGPT chats', or speak in English/Sinhala)..."></textarea>
+        <textarea id="directive-input" placeholder="Say 'Luna' out loud, or type your directive (e.g. 'Create folder ProjectLuna on Desktop', 'Open Notepad and YouTube', 'Read my ChatGPT chats', or speak in English/Sinhala)..."></textarea>
         
         <div class="prompt-actions">
           <div style="display: flex; gap: 0.6rem; align-items: center;">
@@ -761,7 +852,7 @@
       </div>
       <div class="task-stream" id="task-stream">
         <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); padding: 1rem 0;">
-          Awaiting Founder directive. Subtasks will form a dynamic neural graph here.
+          Awaiting Founder directive. Say "Luna" or click Transmit.
         </div>
       </div>
 
@@ -779,7 +870,7 @@
       <div class="debrief-deck">
         <div class="debrief-card">
           <div class="debrief-summary" id="debrief-summary">
-            Standing by, Founder. Neural synapses aligned.
+            Standing by, Founder. Say "Luna" to wake up.
           </div>
 
           <div class="highlights-box" id="debrief-highlights">
@@ -807,7 +898,34 @@
     let ws = null;
     let isRecording = false;
     let recognition = null;
+    let wakeRecognition = null;
+    let wakeWordEnabled = true;
     let orbState = 'idle'; // 'idle', 'listening', 'processing', 'speaking'
+
+    // Theme Switcher (Dark / Light)
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-theme');
+      const icon = document.getElementById('theme-icon');
+      const label = document.getElementById('theme-label');
+      if (isLight) {
+        icon.innerText = '☀️';
+        label.innerText = 'LIGHT';
+        localStorage.setItem('luna_theme', 'light');
+      } else {
+        icon.innerText = '🌙';
+        label.innerText = 'DARK';
+        localStorage.setItem('luna_theme', 'dark');
+      }
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('luna_theme');
+      if (saved === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('theme-icon').innerText = '☀️';
+        document.getElementById('theme-label').innerText = 'LIGHT';
+      }
+    }
 
     // Real-Time System Clock
     function updateClock() {
@@ -828,18 +946,21 @@
       const cy = canvas.height / 2;
       angle += orbState === 'processing' ? 0.08 : (orbState === 'listening' ? 0.05 : 0.02);
 
+      const isLight = document.body.classList.contains('light-theme');
+      const primaryColor = orbState === 'listening' ? '#ef4444' : (isLight ? '#0284c7' : '#00f2fe');
+
       // Outer Pulsing Glow
       const pulse = Math.sin(Date.now() * 0.003) * 6;
       ctx.beginPath();
       ctx.arc(cx, cy, 48 + pulse, 0, Math.PI * 2);
-      ctx.fillStyle = orbState === 'listening' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 242, 254, 0.1)';
+      ctx.fillStyle = orbState === 'listening' ? 'rgba(239, 68, 68, 0.15)' : (isLight ? 'rgba(2, 132, 199, 0.12)' : 'rgba(0, 242, 254, 0.1)');
       ctx.fill();
 
       // Rotating Concentric Sci-Fi Rings
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
-      ctx.strokeStyle = orbState === 'listening' ? '#ef4444' : '#00f2fe';
+      ctx.strokeStyle = primaryColor;
       ctx.lineWidth = 2;
       ctx.setLineDash([8, 6]);
       ctx.beginPath();
@@ -863,10 +984,10 @@
       ctx.arc(cx, cy, 14, 0, Math.PI * 2);
       const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 14);
       grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(1, orbState === 'listening' ? '#ef4444' : '#00f2fe');
+      grad.addColorStop(1, primaryColor);
       ctx.fillStyle = grad;
       ctx.shadowBlur = 15;
-      ctx.shadowColor = orbState === 'listening' ? '#ef4444' : '#00f2fe';
+      ctx.shadowColor = primaryColor;
       ctx.fill();
       ctx.shadowBlur = 0;
 
@@ -1031,7 +1152,7 @@
       }
     }
 
-    // Voice Input (Web Speech Recognition)
+    // Direct Voice AI Button
     function toggleVoiceInput() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -1089,6 +1210,93 @@
       recognition.start();
     }
 
+    // Continuous "LUNA" Wake Word Detection
+    function initWakeWordListener() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      wakeRecognition = new SpeechRecognition();
+      wakeRecognition.continuous = true;
+      wakeRecognition.interimResults = true;
+      wakeRecognition.lang = 'en-US';
+
+      wakeRecognition.onresult = (event) => {
+        if (!wakeWordEnabled || isRecording) return;
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const raw = event.results[i][0].transcript.toLowerCase().trim();
+          
+          // Check wake word matches
+          if (raw.includes('luna') || raw.includes('hey luna') || raw.includes('hello luna') || raw.includes('ok luna')) {
+            console.log("Wake word triggered:", raw);
+            
+            // Extract the command after the wake word if spoken together
+            let cleaned = raw.replace(/\b(hey luna|hello luna|ok luna|luna)\b/gi, '').trim();
+            cleaned = cleaned.replace(/^[,.\s]+/, '');
+
+            // Animate Orb to Awake state
+            orbState = 'listening';
+            document.getElementById('orb-label').innerText = 'LUNA AWAKE // LISTENING';
+            
+            // Speak brief audio chime / wake response
+            speakText("Online, Founder.");
+
+            if (cleaned.length > 3) {
+              document.getElementById('directive-input').value = cleaned;
+              setTimeout(() => {
+                submitDirective();
+              }, 700);
+            } else {
+              // Wait for voice input
+              setTimeout(() => {
+                toggleVoiceInput();
+              }, 600);
+            }
+            break;
+          }
+        }
+      };
+
+      wakeRecognition.onerror = (e) => {
+        // Automatically restart if interrupted
+        if (wakeWordEnabled) {
+          setTimeout(() => {
+            try { wakeRecognition.start(); } catch(err){}
+          }, 1500);
+        }
+      };
+
+      wakeRecognition.onend = () => {
+        if (wakeWordEnabled) {
+          setTimeout(() => {
+            try { wakeRecognition.start(); } catch(err){}
+          }, 1000);
+        }
+      };
+
+      try {
+        wakeRecognition.start();
+      } catch (err) {
+        console.log("Wake recognition auto-start waiting for user gesture");
+      }
+    }
+
+    function toggleWakeWordListener() {
+      wakeWordEnabled = !wakeWordEnabled;
+      const btn = document.getElementById('wake-toggle-btn');
+      const label = document.getElementById('wake-label');
+      
+      if (wakeWordEnabled) {
+        btn.classList.add('wake-active-glow');
+        label.innerText = 'WAKE: SAY "LUNA"';
+        try { wakeRecognition && wakeRecognition.start(); } catch(e){}
+      } else {
+        btn.classList.remove('wake-active-glow');
+        label.innerText = 'WAKE WORD: OFF';
+        try { wakeRecognition && wakeRecognition.stop(); } catch(e){}
+      }
+    }
+
     // Voice Output (Speech Synthesis)
     function speakText(text) {
       const toggle = document.getElementById('voice-reply-toggle');
@@ -1122,7 +1330,7 @@
               <span class="log-time">${time}</span>
               <span style="color: #10b981; font-family: var(--font-mono); font-size: 0.7rem;">// ${item.status.toUpperCase()}</span>
             </div>
-            <div style="font-weight: 600; color: #fff; margin-top: 0.25rem;">${item.founder_input}</div>
+            <div style="font-weight: 600; color: var(--text); margin-top: 0.25rem;">${item.founder_input}</div>
           `;
           div.onclick = () => {
             if (item.report) renderDebrief(item.report);
@@ -1140,7 +1348,11 @@
       }
     }
 
-    window.onload = connectWebSocket;
+    window.onload = () => {
+      initTheme();
+      connectWebSocket();
+      initWakeWordListener();
+    };
   </script>
 </body>
 </html>
