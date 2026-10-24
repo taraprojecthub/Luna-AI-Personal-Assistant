@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="LUNA Chief Executive Multi-Agent System")
     parser.add_argument("--web", action="store_true", help="Launch the Executive Web Dashboard & WebSocket Server")
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host address for Web Server (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8000, help="Port for Web Server (default: 8000)")
+    parser.add_argument("--port", type=int, default=8888, help="Port for Web Server (default: 8888)")
     return parser.parse_args()
 
 def run_web(host: str, port: int):

@@ -76,7 +76,7 @@ Launch the FastAPI backend and real-time streaming web dashboard:
 ```powershell
 .\.venv\Scripts\python.exe main.py --web
 ```
-Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
+Open **[http://127.0.0.1:8888](http://127.0.0.1:8888)** in your browser.
 
 **Web Dashboard Features:**
 - **Founder Command Center**: Issue complex natural language mandates with one-click quick action pills.
