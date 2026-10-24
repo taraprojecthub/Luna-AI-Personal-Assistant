@@ -10,7 +10,7 @@
   <style>
     :root {
       --bg: #03060c;
-      --panel-bg: rgba(7, 13, 24, 0.7);
+      --panel-bg: rgba(7, 13, 24, 0.75);
       --panel-border: rgba(0, 242, 254, 0.2);
       --panel-border-bright: rgba(0, 242, 254, 0.6);
       --cyan: #00f2fe;
@@ -31,7 +31,7 @@
     /* Light Theme (Cybernetic Clean Lab HUD) */
     body.light-theme {
       --bg: #f1f5f9;
-      --panel-bg: rgba(255, 255, 255, 0.85);
+      --panel-bg: rgba(255, 255, 255, 0.88);
       --panel-border: rgba(2, 132, 199, 0.25);
       --panel-border-bright: rgba(2, 132, 199, 0.65);
       --cyan: #0284c7;
@@ -69,7 +69,6 @@
         linear-gradient(90deg, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
     }
 
-    /* Scanline Overlay */
     body::before {
       content: " ";
       position: fixed;
@@ -80,11 +79,8 @@
       pointer-events: none;
       opacity: 0.5;
     }
-    body.light-theme::before {
-      opacity: 0.1;
-    }
+    body.light-theme::before { opacity: 0.08; }
 
-    /* HUD Topbar */
     header {
       display: flex;
       justify-content: space-between;
@@ -98,10 +94,7 @@
       z-index: 100;
       transition: background 0.3s ease;
     }
-
-    body.light-theme header {
-      background: rgba(248, 250, 252, 0.92);
-    }
+    body.light-theme header { background: rgba(248, 250, 252, 0.92); }
 
     .brand-hud {
       display: flex;
@@ -153,7 +146,6 @@
       -webkit-text-fill-color: transparent;
       text-shadow: var(--cyan-glow);
     }
-
     body.light-theme .brand-title-hud {
       background: linear-gradient(90deg, #0f172a, var(--cyan));
       -webkit-background-clip: text;
@@ -171,7 +163,7 @@
     .telemetry-bar {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.15rem;
       font-family: var(--font-mono);
       font-size: 0.78rem;
     }
@@ -197,7 +189,7 @@
     .hud-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: 290px 1.4fr 1fr;
+      grid-template-columns: 280px 1.5fr 1fr;
       gap: 1.25rem;
       padding: 1.25rem 2rem;
       max-width: 1920px;
@@ -223,14 +215,9 @@
       gap: 1rem;
       transition: all 0.3s;
     }
+    body.light-theme .hud-panel { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); }
 
-    body.light-theme .hud-panel {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    }
-
-    .hud-panel:hover {
-      border-color: var(--panel-border-bright);
-    }
+    .hud-panel:hover { border-color: var(--panel-border-bright); }
 
     .hud-panel::before, .hud-panel::after {
       content: "";
@@ -269,7 +256,7 @@
       gap: 0.5rem;
     }
 
-    /* Holographic Visualizer Orb Canvas */
+    /* Holographic Visualizer Orb */
     .orb-container {
       display: flex;
       flex-direction: column;
@@ -295,7 +282,7 @@
       font-weight: 600;
     }
 
-    /* Left Column: Domain Telemetry Gauges */
+    /* Left Column: Domain Gauges */
     .domain-gauge-list {
       display: flex;
       flex-direction: column;
@@ -312,15 +299,9 @@
       gap: 0.35rem;
       transition: all 0.2s;
     }
-
     body.light-theme .domain-gauge-card {
       background: rgba(2, 132, 199, 0.04);
       border-color: rgba(0, 0, 0, 0.08);
-    }
-
-    .domain-gauge-card:hover {
-      background: rgba(0, 242, 254, 0.06);
-      border-color: var(--cyan);
     }
 
     .gauge-header {
@@ -339,9 +320,7 @@
       border-radius: 2px;
       overflow: hidden;
     }
-    body.light-theme .gauge-bar-bg {
-      background: rgba(0, 0, 0, 0.08);
-    }
+    body.light-theme .gauge-bar-bg { background: rgba(0, 0, 0, 0.08); }
 
     .gauge-bar-fill {
       height: 100%;
@@ -356,19 +335,141 @@
       color: var(--text-dim);
     }
 
-    /* Center: Neural Command Center */
+    /* CENTER CONVERSATIONAL CHAT STREAM */
+    .chat-view-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      height: 640px;
+      gap: 0.85rem;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.5rem;
+    }
+    body.light-theme .tab-nav { border-bottom-color: rgba(0, 0, 0, 0.08); }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-hud);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--cyan);
+      border: 1px solid var(--panel-border);
+    }
+
+    .chat-stream {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      padding: 0.75rem 0.5rem;
+    }
+
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+      gap: 0.35rem;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .chat-msg.founder {
+      align-self: flex-end;
+    }
+
+    .chat-msg.luna {
+      align-self: flex-start;
+    }
+
+    .msg-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .msg-bubble {
+      padding: 0.95rem 1.25rem;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      position: relative;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .chat-msg.founder .msg-bubble {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(157, 78, 221, 0.18));
+      border: 1px solid var(--cyan);
+      color: #fff;
+      border-bottom-right-radius: 2px;
+    }
+    body.light-theme .chat-msg.founder .msg-bubble {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(124, 58, 237, 0.12));
+      border-color: var(--cyan);
+      color: #0f172a;
+    }
+
+    .chat-msg.luna .msg-bubble {
+      background: rgba(7, 13, 24, 0.9);
+      border: 1px solid var(--panel-border);
+      border-left: 3px solid var(--cyan);
+      color: var(--text);
+      border-bottom-left-radius: 2px;
+    }
+    body.light-theme .chat-msg.luna .msg-bubble {
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.25);
+      border-left: 3px solid var(--cyan);
+      color: #0f172a;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .tool-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      margin-top: 0.4rem;
+    }
+
+    /* Prompt Box Deck */
     .prompt-box-hud {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.65rem;
       background: rgba(3, 6, 12, 0.85);
       border: 1px solid var(--panel-border);
       border-radius: 10px;
-      padding: 1rem;
+      padding: 0.85rem 1rem;
       position: relative;
       transition: background 0.3s;
     }
-
     body.light-theme .prompt-box-hud {
       background: #ffffff;
       border-color: rgba(2, 132, 199, 0.3);
@@ -381,7 +482,7 @@
 
     textarea#directive-input {
       width: 100%;
-      height: 80px;
+      height: 60px;
       background: transparent;
       border: none;
       color: var(--text);
@@ -397,11 +498,9 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 0.75rem;
+      padding-top: 0.65rem;
     }
-    body.light-theme .prompt-actions {
-      border-top-color: rgba(0, 0, 0, 0.06);
-    }
+    body.light-theme .prompt-actions { border-top-color: rgba(0, 0, 0, 0.06); }
 
     .cyber-btn {
       background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(157, 78, 221, 0.2));
@@ -419,7 +518,6 @@
       gap: 0.5rem;
       transition: all 0.2s;
     }
-
     .cyber-btn:hover {
       background: linear-gradient(135deg, var(--cyan), var(--purple));
       color: #03060c;
@@ -432,7 +530,7 @@
       border: 1px solid var(--panel-border);
       color: var(--cyan);
       border-radius: 6px;
-      padding: 0.55rem 0.9rem;
+      padding: 0.5rem 0.85rem;
       font-size: 0.8rem;
       font-family: var(--font-mono);
       cursor: pointer;
@@ -441,7 +539,6 @@
       gap: 0.4rem;
       transition: all 0.2s;
     }
-
     .mic-recording {
       border-color: var(--red) !important;
       background: rgba(239, 68, 68, 0.2) !important;
@@ -453,7 +550,7 @@
     .quick-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .chip-btn {
@@ -462,82 +559,20 @@
       color: var(--text-dim);
       font-size: 0.72rem;
       font-family: var(--font-mono);
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.65rem;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s;
     }
-
     body.light-theme .chip-btn {
       background: rgba(0, 0, 0, 0.03);
       border-color: rgba(0, 0, 0, 0.1);
       color: #475569;
     }
-
     .chip-btn:hover {
       background: rgba(0, 242, 254, 0.1);
       color: var(--cyan);
       border-color: var(--cyan);
-    }
-
-    /* Subtask Graph Nodes */
-    .task-stream {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      overflow-y: auto;
-      max-height: 480px;
-      padding-right: 0.25rem;
-    }
-
-    .hud-node {
-      background: rgba(7, 13, 24, 0.85);
-      border: 1px solid rgba(0, 242, 254, 0.15);
-      border-left: 3px solid var(--cyan);
-      border-radius: 8px;
-      padding: 0.85rem 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      animation: fadeIn 0.3s ease;
-    }
-
-    body.light-theme .hud-node {
-      background: #ffffff;
-      border-color: rgba(2, 132, 199, 0.2);
-      border-left: 3px solid var(--cyan);
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-    .node-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--font-hud);
-      font-size: 0.75rem;
-    }
-
-    .node-title {
-      color: var(--text);
-      font-size: 0.85rem;
-      line-height: 1.35;
-    }
-
-    .node-out {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.65rem;
-      border-radius: 4px;
-      white-space: pre-wrap;
-      border-left: 2px solid rgba(0, 242, 254, 0.4);
-    }
-
-    body.light-theme .node-out {
-      background: #f1f5f9;
-      color: #334155;
     }
 
     /* Right Column: Mission Debrief */
@@ -556,7 +591,6 @@
       flex-direction: column;
       gap: 0.85rem;
     }
-
     body.light-theme .debrief-card {
       background: linear-gradient(145deg, rgba(124, 58, 237, 0.08), rgba(2, 132, 199, 0.05));
       border-color: rgba(124, 58, 237, 0.25);
@@ -582,11 +616,7 @@
       color: var(--text);
       line-height: 1.35;
     }
-
-    .highlight-row span:first-child {
-      color: var(--cyan);
-      font-weight: bold;
-    }
+    .highlight-row span:first-child { color: var(--cyan); font-weight: bold; }
 
     .strategic-advice-hud {
       background: rgba(0, 242, 254, 0.06);
@@ -604,7 +634,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      max-height: 280px;
+      max-height: 250px;
       overflow-y: auto;
     }
 
@@ -617,17 +647,14 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
     body.light-theme .log-item {
       background: #ffffff;
       border-color: rgba(0, 0, 0, 0.08);
     }
-
     .log-item:hover {
       border-color: var(--cyan);
       background: rgba(0, 242, 254, 0.04);
     }
-
     .log-time {
       font-family: var(--font-mono);
       font-size: 0.68rem;
@@ -675,12 +702,55 @@
       gap: 0.6rem;
     }
 
-    /* Wake Word Live Ripple Indicator */
     .wake-active-glow {
       border-color: var(--green) !important;
       color: var(--green) !important;
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.4) !important;
     }
+
+    /* Subtask Graph (Tab 2) */
+    .task-stream {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 0.25rem;
+    }
+
+    .hud-node {
+      background: rgba(7, 13, 24, 0.85);
+      border: 1px solid rgba(0, 242, 254, 0.15);
+      border-left: 3px solid var(--cyan);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    body.light-theme .hud-node {
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.2);
+    }
+    .node-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-hud);
+      font-size: 0.75rem;
+    }
+    .node-title { color: var(--text); font-size: 0.85rem; line-height: 1.35; }
+    .node-out {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.65rem;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      border-left: 2px solid rgba(0, 242, 254, 0.4);
+    }
+    body.light-theme .node-out { background: #f1f5f9; color: #334155; }
   </style>
 </head>
 <body>
@@ -713,7 +783,7 @@
       </div>
       <div>
         <div class="brand-title-hud">LUNA // HUD</div>
-        <div class="brand-tag">CHIEF EXECUTIVE AGENTIC OS</div>
+        <div class="brand-tag">AUTONOMOUS CONVERSATIONAL AI OS</div>
       </div>
     </div>
 
@@ -803,57 +873,76 @@
       </div>
     </div>
 
-    <!-- CENTER: Command Center & Subtask Stream -->
+    <!-- CENTER: Interactive Conversational AI Chat -->
     <div class="hud-panel" style="flex: 1;">
+      
       <div class="panel-header">
         <div class="panel-title">
-          <span>⚡</span> NEURAL COMMAND CONSOLE
+          <span>⚡</span> NEURAL AI DIALOGUE
         </div>
-        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim);" id="task-count-hud">
-          READY FOR DIRECTIVE
+        <div class="tab-nav">
+          <button class="tab-btn active" id="tab-chat" onclick="switchCenterTab('chat')">💬 CHAT STREAM</button>
+          <button class="tab-btn" id="tab-graph" onclick="switchCenterTab('graph')">🔀 SUBTASK NODES</button>
         </div>
       </div>
 
-      <!-- Prompt Input Deck -->
-      <div class="prompt-box-hud">
-        <textarea id="directive-input" placeholder="Say 'Luna' out loud, or type your directive (e.g. 'Create folder ProjectLuna on Desktop', 'Open Notepad and YouTube', 'Read my ChatGPT chats', or speak in English/Sinhala)..."></textarea>
+      <div class="chat-view-container">
         
-        <div class="prompt-actions">
-          <div style="display: flex; gap: 0.6rem; align-items: center;">
-            <button class="mic-hud-btn" id="mic-btn" onclick="toggleVoiceInput()">
-              <span id="mic-icon">🎙️</span> <span id="mic-label">VOICE AI</span>
-            </button>
-            <label style="font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-family: var(--font-mono);">
-              <input type="checkbox" id="voice-reply-toggle" checked style="accent-color: var(--cyan);">
-              <span>🔊 VOICE REPLY</span>
-            </label>
+        <!-- Tab 1: Scrollable Conversational Chat Stream -->
+        <div class="chat-stream" id="chat-stream">
+          <!-- Initial Welcome Message from LUNA -->
+          <div class="chat-msg luna">
+            <div class="msg-meta">
+              <span>⚛️ LUNA</span> • <span>EXECUTIVE AI</span>
+            </div>
+            <div class="msg-bubble">
+Online and standing by, Founder. I am fully integrated into your Windows operating system, files, and smart home.
+
+You can speak to me, ask me questions, or tell me to perform actions directly on your PC (e.g. *“Create a folder called ProjectNova on Desktop”*, *“What are my pending projects from ChatGPT?”*, or *“Run command: Get-Process”*).
+
+What would you like me to do for you today?
+            </div>
           </div>
-
-          <button class="cyber-btn" id="submit-btn" onclick="submitDirective()">
-            <span>TRANSMIT</span>
-            <span>➔</span>
-          </button>
         </div>
-      </div>
 
-      <!-- Quick Action Holographic Chips -->
-      <div class="quick-chips">
-        <button class="chip-btn" onclick="setDirective('Create a folder called LunaDemo on Desktop')">📁 Create Folder on Desktop</button>
-        <button class="chip-btn" onclick="setDirective('Read my ChatGPT chats and tell me what are my pending projects')">📋 Audit ChatGPT Projects</button>
-        <button class="chip-btn" onclick="setDirective('Open Notepad and open Downloads folder')">🖥️ Open Notepad & Downloads</button>
-        <button class="chip-btn" onclick="setDirective('Run command: Get-Process | Select-Object -First 5 ProcessName, CPU')">⚡ Run PowerShell Command</button>
-        <button class="chip-btn" onclick="setDirective('Dim office lights to 30%, inspect git status, and prep launch tweet')">💡 Office & Launch Ops</button>
-        <button class="chip-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger</button>
-      </div>
-
-      <!-- Delegated Subtask Graph Nodes -->
-      <div style="font-family: var(--font-hud); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 1px; margin-top: 0.5rem;">
-        // ACTIVE SUBTASK STREAM
-      </div>
-      <div class="task-stream" id="task-stream">
-        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); padding: 1rem 0;">
-          Awaiting Founder directive. Say "Luna" or click Transmit.
+        <!-- Tab 2: Delegated Subtask Graph Nodes -->
+        <div class="task-stream" id="task-stream">
+          <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); padding: 1rem 0;">
+            Awaiting Founder directive. Subtasks will form a dynamic neural graph here.
+          </div>
         </div>
+
+        <!-- Prompt Input Deck -->
+        <div class="prompt-box-hud">
+          <textarea id="directive-input" placeholder="Type or say 'Luna' (e.g. 'Create a folder called Test on Desktop', 'Check git status', 'What projects are pending?')..."></textarea>
+          
+          <div class="prompt-actions">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="mic-hud-btn" id="mic-btn" onclick="toggleVoiceInput()">
+                <span id="mic-icon">🎙️</span> <span id="mic-label">VOICE AI</span>
+              </button>
+              <label style="font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-family: var(--font-mono);">
+                <input type="checkbox" id="voice-reply-toggle" checked style="accent-color: var(--cyan);">
+                <span>🔊 VOICE REPLY</span>
+              </label>
+            </div>
+
+            <button class="cyber-btn" id="submit-btn" onclick="submitDirective()">
+              <span>TRANSMIT</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Action Chips -->
+        <div class="quick-chips">
+          <button class="chip-btn" onclick="setDirective('Create a folder called LunaDemo on Desktop')">📁 Create Folder on Desktop</button>
+          <button class="chip-btn" onclick="setDirective('Read my ChatGPT chats and tell me what are my pending projects')">📋 Audit ChatGPT Projects</button>
+          <button class="chip-btn" onclick="setDirective('Open Notepad and open Downloads folder')">🖥️ Open Desktop Apps</button>
+          <button class="chip-btn" onclick="setDirective('Run command: Get-Process | Select-Object -First 5 ProcessName, CPU')">⚡ Run PowerShell Command</button>
+          <button class="chip-btn" onclick="setDirective('Dim office lights to 30%, inspect git status, and prep launch tweet')">💡 Office & Launch Ops</button>
+        </div>
+
       </div>
 
     </div>
@@ -900,7 +989,7 @@
     let recognition = null;
     let wakeRecognition = null;
     let wakeWordEnabled = true;
-    let orbState = 'idle'; // 'idle', 'listening', 'processing', 'speaking'
+    let orbState = 'idle';
 
     // Theme Switcher (Dark / Light)
     function toggleTheme() {
@@ -924,6 +1013,26 @@
         document.body.classList.add('light-theme');
         document.getElementById('theme-icon').innerText = '☀️';
         document.getElementById('theme-label').innerText = 'LIGHT';
+      }
+    }
+
+    // Tab Switcher in Center Panel
+    function switchCenterTab(tab) {
+      const chatStream = document.getElementById('chat-stream');
+      const taskStream = document.getElementById('task-stream');
+      const btnChat = document.getElementById('tab-chat');
+      const btnGraph = document.getElementById('tab-graph');
+
+      if (tab === 'chat') {
+        chatStream.style.display = 'flex';
+        taskStream.style.display = 'none';
+        btnChat.classList.add('active');
+        btnGraph.classList.remove('active');
+      } else {
+        chatStream.style.display = 'none';
+        taskStream.style.display = 'flex';
+        btnGraph.classList.add('active');
+        btnChat.classList.remove('active');
       }
     }
 
@@ -1023,31 +1132,55 @@
       document.getElementById('directive-input').value = text;
     }
 
+    // Append Chat Bubble to Stream
+    function appendChatBubble(role, text, tools) {
+      const stream = document.getElementById('chat-stream');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `chat-msg ${role}`;
+
+      const meta = document.createElement('div');
+      meta.className = 'msg-meta';
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      meta.innerHTML = role === 'founder' ? `<span>FOUNDER</span> • <span>${time}</span>` : `<span>⚛️ LUNA</span> • <span>${time}</span>`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.innerText = text;
+
+      // Add tool badges if tools were executed
+      if (tools && tools.length > 0) {
+        tools.forEach(t => {
+          const pill = document.createElement('div');
+          pill.className = 'tool-pill';
+          pill.innerHTML = `<span>⚙️ ${t.tool}</span>: <span style="color: #94a3b8;">${t.result.substring(0, 70)}</span>`;
+          bubble.appendChild(document.createElement('br'));
+          bubble.appendChild(pill);
+        });
+      }
+
+      msgDiv.appendChild(meta);
+      msgDiv.appendChild(bubble);
+      stream.appendChild(msgDiv);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
     function submitDirective() {
       const input = document.getElementById('directive-input').value.trim();
       if (!input) return;
 
+      // Add user message bubble
+      appendChatBubble('founder', input);
+      document.getElementById('directive-input').value = '';
+
       orbState = 'processing';
       document.getElementById('orb-label').innerText = 'NEURAL PROCESSING';
       document.getElementById('submit-btn').disabled = true;
-      document.getElementById('task-stream').innerHTML = '<div style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.8rem;">✦ LUNA compiling intent decomposition graph...</div>';
-      document.getElementById('debrief-summary').innerText = 'Analyzing operational parameters...';
+
+      // Ensure we are on the Chat tab
+      switchCenterTab('chat');
 
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'directive', text: input }));
-      } else {
-        fetch('/api/directive', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ founder_input: input })
-        })
-        .then(r => r.json())
-        .then(data => {
-          renderCompleteSession(data);
-          document.getElementById('submit-btn').disabled = false;
-          orbState = 'idle';
-          document.getElementById('orb-label').innerText = 'CORE READY • 100%';
-        });
       }
     }
 
@@ -1061,24 +1194,32 @@
     function handleStreamMessage(msg) {
       const { stage, data } = msg;
 
-      if (stage === 'planning') {
-        document.getElementById('task-count-hud').innerText = `${data.subtasks.length} SUBTASKS DISPATCHED`;
+      // 1. Direct Conversational AI Reply
+      if (stage === 'chat_reply') {
+        appendChatBubble('luna', data.reply, data.tools);
+        speakText(data.reply);
+      }
+      // 2. Multi-Agent Planning
+      else if (stage === 'planning') {
         renderTaskGraph(data.subtasks);
       } 
+      // 3. Safety Check
       else if (stage === 'risk_check') {
         if (data.requires_confirmation) {
           document.getElementById('safety-modal-reason').innerText = data.confirmation_reason;
           document.getElementById('safety-modal').style.display = 'flex';
         }
       } 
+      // 4. Subtask Update
       else if (stage === 'task_complete') {
         updateTaskOutput(data.task_id, data.output, data.status);
       } 
+      // 5. Synthesis Complete
       else if (stage === 'synthesis') {
         renderDebrief(data);
         document.getElementById('submit-btn').disabled = false;
         orbState = 'idle';
-        document.getElementById('orb-label').innerText = 'MISSION COMPLETE';
+        document.getElementById('orb-label').innerText = 'CORE READY • 100%';
         loadMissionLogs();
       }
     }
@@ -1126,8 +1267,6 @@
       if (report.proactive_advice) {
         document.getElementById('debrief-advice').innerHTML = `<strong>CEO STRATEGIC ADVICE:</strong> ${report.proactive_advice}`;
       }
-
-      speakText(report.executive_summary);
     }
 
     function getDomainColor(domain) {
@@ -1226,19 +1365,14 @@
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const raw = event.results[i][0].transcript.toLowerCase().trim();
           
-          // Check wake word matches
           if (raw.includes('luna') || raw.includes('hey luna') || raw.includes('hello luna') || raw.includes('ok luna')) {
             console.log("Wake word triggered:", raw);
             
-            // Extract the command after the wake word if spoken together
             let cleaned = raw.replace(/\b(hey luna|hello luna|ok luna|luna)\b/gi, '').trim();
             cleaned = cleaned.replace(/^[,.\s]+/, '');
 
-            // Animate Orb to Awake state
             orbState = 'listening';
             document.getElementById('orb-label').innerText = 'LUNA AWAKE // LISTENING';
-            
-            // Speak brief audio chime / wake response
             speakText("Online, Founder.");
 
             if (cleaned.length > 3) {
@@ -1247,7 +1381,6 @@
                 submitDirective();
               }, 700);
             } else {
-              // Wait for voice input
               setTimeout(() => {
                 toggleVoiceInput();
               }, 600);
@@ -1257,8 +1390,7 @@
         }
       };
 
-      wakeRecognition.onerror = (e) => {
-        // Automatically restart if interrupted
+      wakeRecognition.onerror = () => {
         if (wakeWordEnabled) {
           setTimeout(() => {
             try { wakeRecognition.start(); } catch(err){}
@@ -1303,7 +1435,9 @@
       if (!toggle || !toggle.checked || !window.speechSynthesis) return;
 
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Clean markdown stars/backticks for smooth spoken audio
+      const cleanVoice = text.replace(/[*#`_\[\]]/g, '');
+      const utterance = new SpeechSynthesisUtterance(cleanVoice);
       utterance.rate = 1.05;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);

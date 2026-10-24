@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from luna.core.engine import LunaCEOEngine
 from luna.core.state import LunaGlobalState
+from luna.core.conversation_agent import conversation_agent
 from luna.memory.database import memory_db
 
 app = FastAPI(title="LUNA Executive Multi-Agent API", version="0.3.0")
@@ -72,11 +73,22 @@ async def websocket_stream(websocket: WebSocket):
             data = json.loads(data_raw)
             action = data.get("action")
 
-            if action == "directive":
+            if action in ("directive", "chat"):
                 text = data.get("text", "")
                 state = LunaGlobalState(founder_input=text)
 
-                # Step 1: Planning
+                # Step 1: Autonomous Conversational Execution
+                chat_res = await conversation_agent.chat(text)
+                await websocket.send_json({
+                    "stage": "chat_reply",
+                    "data": {
+                        "user_message": text,
+                        "reply": chat_res["reply"],
+                        "tools": chat_res["tools_executed"]
+                    }
+                })
+
+                # Step 2: Planning & Multi-Agent Graph
                 plan = await engine.plan(text, state)
                 await websocket.send_json({
                     "stage": "planning",
