@@ -68,6 +68,7 @@ class LunaCEOEngine:
         if any(w in lower_input for w in [
             "run command", "powershell", "terminal", "notepad", "calculator", "calc",
             "youtube", "downloads", "explorer", "read file", "write file", "execute",
+            "create folder", "make folder", "new folder", "mkdir", "create directory", "folder",
             "නෝට්පෑඩ්", "කැල්කියුලේටරය", "යූටියුබ්", "ඩවුන්ලෝඩ්ස්", "ලේඛන", "කරන්න"
         ]):
             subtasks.append(SubTask(

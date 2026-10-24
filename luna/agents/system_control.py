@@ -33,7 +33,15 @@ class SystemControlAgent(BaseAgent):
         # Strip generic planner prefixes
         clean_text = re.sub(r"^execute autonomous developer os operation:\s*", "", instruction, flags=re.IGNORECASE).strip()
 
-        # 1. Check LUNA desktop action (apps, folders, websites, Sinhala/English commands)
+        # 1. Check folder/directory creation
+        folder_res = self.os_tools.create_directory(clean_text)
+        if folder_res:
+            if folder_res["success"]:
+                actions.append(f"[Directory Created Successfully]\nPath: {folder_res['path']}")
+            else:
+                actions.append(f"[Directory Creation Failed] {folder_res.get('error')}")
+
+        # 2. Check LUNA desktop action (apps, folders, websites, Sinhala/English commands)
         desktop_action = self.os_tools.execute_desktop_action(clean_text)
         if desktop_action:
             actions.append(f"[Desktop Action] {desktop_action}")

@@ -72,6 +72,61 @@ class WindowsOSTools:
             return {"success": False, "error": str(e)}
 
     @classmethod
+    def create_directory(cls, instruction: str) -> Optional[Dict[str, Any]]:
+        """Parses natural language requests to create folders and directories anywhere on the PC."""
+        lower = instruction.lower().strip()
+        
+        # Check if folder creation is requested
+        keywords = ["create folder", "make folder", "create a folder", "new folder", "mkdir", "make directory", "create directory", "folder එක හදන්න"]
+        if not any(k in lower for k in keywords):
+            return None
+
+        # Determine target base directory
+        base_dir = Path.cwd()
+        if "desktop" in lower:
+            base_dir = Path.home() / "Desktop"
+        elif "documents" in lower:
+            base_dir = Path.home() / "Documents"
+        elif "downloads" in lower:
+            base_dir = Path.home() / "Downloads"
+
+        # Extract folder name
+        folder_name = None
+        # Pattern 1: called/named 'FolderName'
+        m = re.search(r'(?:called|named|name)\s+["\']?([a-zA-Z0-9_\-]+)["\']?', instruction, re.IGNORECASE)
+        if m:
+            folder_name = m.group(1).strip()
+        else:
+            # Pattern 2: create folder FolderName
+            m2 = re.search(r'(?:create|make|new)\s+(?:a\s+)?(?:folder|directory|dir)\s+["\']?([a-zA-Z0-9_\-]+)["\']?', instruction, re.IGNORECASE)
+            if m2 and m2.group(1).lower() not in ["on", "in", "called", "named", "at"]:
+                folder_name = m2.group(1).strip()
+            else:
+                m3 = re.search(r'(?:mkdir)\s+["\']?([^"\']+)["\']?', instruction, re.IGNORECASE)
+                if m3:
+                    folder_name = m3.group(1).strip()
+
+        if not folder_name:
+            folder_name = "New_Folder"
+
+        target_path = Path(folder_name)
+        if not target_path.is_absolute():
+            target_path = base_dir / folder_name
+
+        try:
+            target_path.mkdir(parents=True, exist_ok=True)
+            return {
+                "success": True,
+                "path": str(target_path),
+                "name": target_path.name
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    @classmethod
     def execute_desktop_action(cls, text: str) -> Optional[str]:
         """
         Executes LUNA desktop actions (apps, browser, folders).
