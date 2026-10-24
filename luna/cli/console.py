@@ -32,6 +32,7 @@ def display_agent_roster():
     table.add_row("🏠 smart_home", "Smart Home Manager", "Home Assistant REST, MQTT, Climate, Lighting, Locks")
     table.add_row("💻 projects", "Project & Tech Lead", "GitHub REST, CI/CD, Linear Issues, VPS / Cloud Ops")
     table.add_row("📈 marketing", "Growth & Social Lead", "Content Copy, X / LinkedIn / Meta, Audience Metrics")
+    table.add_row("📋 assistant", "Personal Chief of Staff", "ChatGPT Ingestion, Document Audits, Pending Projects")
     table.add_row("⚡ adhoc", "Dynamic Spawner", "Deep Web Research, Script Generation, Ad-Hoc Tasks")
     console.print(table)
     console.print()
@@ -89,6 +90,7 @@ async def process_directive(engine: LunaCEOEngine, user_input: str):
             "smart_home": "green",
             "projects": "blue",
             "marketing": "magenta",
+            "assistant": "cyan",
             "adhoc": "yellow"
         }.get(res.target_domain, "white")
         

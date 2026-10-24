@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Optional, Literal
 from pydantic import BaseModel, Field
 
-DomainType = Literal["smart_home", "projects", "marketing", "adhoc"]
+DomainType = Literal["smart_home", "projects", "marketing", "adhoc", "assistant"]
 
 class SubTask(BaseModel):
     task_id: str = Field(description="Unique identifier for the subtask, e.g. task_1")

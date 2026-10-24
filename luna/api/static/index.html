@@ -265,6 +265,7 @@
     .domain-smart_home { color: #10b981; }
     .domain-projects { color: #3b82f6; }
     .domain-marketing { color: #ec4899; }
+    .domain-assistant { color: #06b6d4; }
     .domain-adhoc { color: #f59e0b; }
 
     .task-status {
@@ -460,10 +461,10 @@
         </div>
 
         <div class="quick-actions">
-          <button class="quick-btn" onclick="setDirective('Dim office lights to 30%, inspect latest build status, and prep a launch tweet')">💡 Office & Launch Prep</button>
-          <button class="quick-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger Test</button>
+          <button class="quick-btn" onclick="setDirective('Read my ChatGPT chats and summarize all my pending projects')">📋 ChatGPT & Pending Projects</button>
+          <button class="quick-btn" onclick="setDirective('Dim office lights to 30%, inspect latest build status, and prep a launch tweet')">💡 Office & Launch</button>
+          <button class="quick-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger</button>
           <button class="quick-btn" onclick="setDirective('Give me an update on our marketing metrics and open engineering PRs')">📊 Status Debrief</button>
-          <button class="quick-btn" onclick="setDirective('Research the top 2026 AI agent architecture trends')">🔍 Web Research</button>
         </div>
 
         <div class="button-row">
@@ -674,6 +675,7 @@
         case 'smart_home': return '🏠';
         case 'projects': return '💻';
         case 'marketing': return '📈';
+        case 'assistant': return '📋';
         default: return '⚡';
       }
     }

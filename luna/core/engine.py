@@ -11,6 +11,7 @@ from luna.agents.smart_home import SmartHomeAgent
 from luna.agents.projects import ProjectsAgent
 from luna.agents.marketing import MarketingAgent
 from luna.agents.adhoc import AdHocAgent
+from luna.agents.assistant import AssistantAgent
 
 CEO_SYSTEM_PROMPT = """
 You are LUNA, the Chief Executive AI Agent.
@@ -18,7 +19,8 @@ You answer directly to the Founder. You oversee specialized domain sub-agents:
 1. smart_home: Handles IoT, lighting, environment, security, locks, scenes, automation.
 2. projects: Handles repos, pull requests, CI/CD, server builds, tickets, technical architecture.
 3. marketing: Handles social media (X, LinkedIn, Meta, YouTube), content drafting, scheduling, growth metrics.
-4. adhoc: Handles ad-hoc research, web analysis, code debugging, general support tasks.
+4. assistant: Personal Chief of Staff. Ingests ChatGPT chat exports, reads documents, tracks pending projects, audits unfinished tasks, and organizes executive agendas.
+5. adhoc: Handles ad-hoc research, web analysis, code debugging, general support tasks.
 
 When the Founder gives an order:
 - Decompose the goal into targeted, domain-specific subtasks.
@@ -49,6 +51,7 @@ class LunaCEOEngine:
             "smart_home": SmartHomeAgent(),
             "projects": ProjectsAgent(),
             "marketing": MarketingAgent(),
+            "assistant": AssistantAgent(),
             "adhoc": AdHocAgent(),
         }
 
@@ -57,6 +60,16 @@ class LunaCEOEngine:
         lower_input = founder_input.lower()
         subtasks: List[SubTask] = []
         task_counter = 1
+
+        # Check Personal Assistant & Knowledge (ChatGPT chats, pending projects, to-dos)
+        if any(w in lower_input for w in ["chatgpt", "chat", "pending project", "pending", "assistant", "what are my", "audit", "todo"]):
+            subtasks.append(SubTask(
+                task_id=f"task_{task_counter}",
+                target_domain="assistant",
+                instruction=f"Audit knowledge base and report pending projects: {founder_input}",
+                expected_output="Structured summary of pending projects and next steps"
+            ))
+            task_counter += 1
 
         # Check Smart Home
         if any(w in lower_input for w in ["light", "lamp", "temp", "ac", "thermostat", "door", "lock", "home", "dim"]):
