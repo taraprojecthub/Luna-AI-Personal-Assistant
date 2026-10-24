@@ -12,6 +12,7 @@ from luna.agents.projects import ProjectsAgent
 from luna.agents.marketing import MarketingAgent
 from luna.agents.adhoc import AdHocAgent
 from luna.agents.assistant import AssistantAgent
+from luna.agents.system_control import SystemControlAgent
 
 CEO_SYSTEM_PROMPT = """
 You are LUNA, the Chief Executive AI Agent.
@@ -20,7 +21,8 @@ You answer directly to the Founder. You oversee specialized domain sub-agents:
 2. projects: Handles repos, pull requests, CI/CD, server builds, tickets, technical architecture.
 3. marketing: Handles social media (X, LinkedIn, Meta, YouTube), content drafting, scheduling, growth metrics.
 4. assistant: Personal Chief of Staff. Ingests ChatGPT chat exports, reads documents, tracks pending projects, audits unfinished tasks, and organizes executive agendas.
-5. adhoc: Handles ad-hoc research, web analysis, code debugging, general support tasks.
+5. system_control: Autonomous OS & Developer Specialist (like Antigravity, Codex, and Claude). Executes PowerShell commands, reads/writes files on disk, launches Windows apps (Notepad, Calc, Explorer), navigates URLs, and handles multilingual English/Sinhala/Singlish instructions.
+6. adhoc: Handles ad-hoc research, web analysis, code debugging, general support tasks.
 
 When the Founder gives an order:
 - Decompose the goal into targeted, domain-specific subtasks.
@@ -52,6 +54,7 @@ class LunaCEOEngine:
             "projects": ProjectsAgent(),
             "marketing": MarketingAgent(),
             "assistant": AssistantAgent(),
+            "system_control": SystemControlAgent(),
             "adhoc": AdHocAgent(),
         }
 
@@ -60,6 +63,20 @@ class LunaCEOEngine:
         lower_input = founder_input.lower()
         subtasks: List[SubTask] = []
         task_counter = 1
+
+        # Check Autonomous System / Developer & OS Control (PowerShell, file read/write, apps, desktop, Sinhala)
+        if any(w in lower_input for w in [
+            "run command", "powershell", "terminal", "notepad", "calculator", "calc",
+            "youtube", "downloads", "explorer", "read file", "write file", "execute",
+            "නෝට්පෑඩ්", "කැල්කියුලේටරය", "යූටියුබ්", "ඩවුන්ලෝඩ්ස්", "ලේඛන", "කරන්න"
+        ]):
+            subtasks.append(SubTask(
+                task_id=f"task_{task_counter}",
+                target_domain="system_control",
+                instruction=f"Execute autonomous developer OS operation: {founder_input}",
+                expected_output="Direct execution output, process feedback, and system status"
+            ))
+            task_counter += 1
 
         # Check Personal Assistant & Knowledge (ChatGPT chats, pending projects, to-dos)
         if any(w in lower_input for w in ["chatgpt", "chat", "pending project", "pending", "assistant", "what are my", "audit", "todo"]):

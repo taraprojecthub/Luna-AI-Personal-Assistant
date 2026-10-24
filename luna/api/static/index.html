@@ -266,6 +266,7 @@
     .domain-projects { color: #3b82f6; }
     .domain-marketing { color: #ec4899; }
     .domain-assistant { color: #06b6d4; }
+    .domain-system_control { color: #a3e635; }
     .domain-adhoc { color: #f59e0b; }
 
     .task-status {
@@ -457,14 +458,28 @@
         </div>
 
         <div class="input-container">
-          <textarea id="directive-input" placeholder="Issue a high-level operational mandate to LUNA (e.g. 'Dim office lights to 30%, inspect latest build status, and prep a tweet announcing our beta')..."></textarea>
+          <textarea id="directive-input" placeholder="Issue a high-level mandate or speak to LUNA (e.g. 'Open Notepad', 'Run command Get-Process', 'Read my ChatGPT chats', or speak in English / Sinhala)..."></textarea>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: -0.25rem;">
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="quick-btn" id="mic-btn" onclick="toggleVoiceInput()" style="background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); color: #00f2fe; font-weight: 600;">
+              <span id="mic-icon">🎙️</span> <span id="mic-label">Speak (Voice AI)</span>
+            </button>
+            <label style="font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+              <input type="checkbox" id="voice-reply-toggle" checked style="accent-color: var(--accent-cyan);">
+              <span>🔊 Voice Reply (TTS)</span>
+            </label>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-dim);">English / Sinhala / Singlish supported</span>
         </div>
 
         <div class="quick-actions">
-          <button class="quick-btn" onclick="setDirective('Read my ChatGPT chats and summarize all my pending projects')">📋 ChatGPT & Pending Projects</button>
-          <button class="quick-btn" onclick="setDirective('Dim office lights to 30%, inspect latest build status, and prep a launch tweet')">💡 Office & Launch</button>
+          <button class="quick-btn" onclick="setDirective('Read my ChatGPT chats and summarize all my pending projects')">📋 ChatGPT & Projects</button>
+          <button class="quick-btn" onclick="setDirective('Open Notepad and open Downloads folder')">🖥️ Open Desktop Apps</button>
+          <button class="quick-btn" onclick="setDirective('Run command: Get-Process | Select-Object -First 5 ProcessName, CPU')">⚡ Run PowerShell Command</button>
+          <button class="quick-btn" onclick="setDirective('Dim office lights to 30%, inspect build status, and prep launch tweet')">💡 Office & Launch</button>
           <button class="quick-btn" onclick="setDirective('Deploy current main branch to production and unlock front door')">⚠️ Safety Trigger</button>
-          <button class="quick-btn" onclick="setDirective('Give me an update on our marketing metrics and open engineering PRs')">📊 Status Debrief</button>
         </div>
 
         <div class="button-row">
@@ -654,6 +669,71 @@
       }
     }
 
+    let isRecording = false;
+    let recognition = null;
+
+    function toggleVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech Recognition is not supported by your browser. Please use Chrome or Edge.");
+        return;
+      }
+
+      if (isRecording) {
+        if (recognition) recognition.stop();
+        isRecording = false;
+        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
+        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US'; // Also understands accented speech and Singlish
+
+      recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('mic-label').innerText = 'Listening... Speak now';
+        document.getElementById('mic-btn').style.background = 'rgba(239, 68, 68, 0.25)';
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('directive-input').value = transcript;
+        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
+        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
+        isRecording = false;
+        submitDirective();
+      };
+
+      recognition.onerror = (e) => {
+        console.error("Speech error:", e);
+        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
+        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
+        isRecording = false;
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('mic-label').innerText = 'Speak (Voice AI)';
+        document.getElementById('mic-btn').style.background = 'rgba(0, 242, 254, 0.1)';
+      };
+
+      recognition.start();
+    }
+
+    function speakText(text) {
+      const toggle = document.getElementById('voice-reply-toggle');
+      if (!toggle || !toggle.checked || !window.speechSynthesis) return;
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
     function renderDebrief(report) {
       document.getElementById('brief-summary').innerText = report.executive_summary;
       const hList = document.getElementById('brief-highlights');
@@ -668,6 +748,9 @@
       if (report.proactive_advice) {
         document.getElementById('brief-advice').innerHTML = `<strong>CEO Insight:</strong> ${report.proactive_advice}`;
       }
+
+      // Voice output
+      speakText(report.executive_summary);
     }
 
     function getDomainIcon(domain) {
@@ -676,6 +759,7 @@
         case 'projects': return '💻';
         case 'marketing': return '📈';
         case 'assistant': return '📋';
+        case 'system_control': return '🖥️';
         default: return '⚡';
       }
     }

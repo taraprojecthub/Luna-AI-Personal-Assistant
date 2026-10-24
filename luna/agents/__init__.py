@@ -4,6 +4,7 @@ from .projects import ProjectsAgent
 from .marketing import MarketingAgent
 from .adhoc import AdHocAgent
 from .assistant import AssistantAgent
+from .system_control import SystemControlAgent
 
 __all__ = [
     "BaseAgent",
@@ -12,4 +13,5 @@ __all__ = [
     "MarketingAgent",
     "AdHocAgent",
     "AssistantAgent",
+    "SystemControlAgent",
 ]

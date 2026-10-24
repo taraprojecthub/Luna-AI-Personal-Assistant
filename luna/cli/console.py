@@ -33,6 +33,7 @@ def display_agent_roster():
     table.add_row("💻 projects", "Project & Tech Lead", "GitHub REST, CI/CD, Linear Issues, VPS / Cloud Ops")
     table.add_row("📈 marketing", "Growth & Social Lead", "Content Copy, X / LinkedIn / Meta, Audience Metrics")
     table.add_row("📋 assistant", "Personal Chief of Staff", "ChatGPT Ingestion, Document Audits, Pending Projects")
+    table.add_row("🖥️ system_control", "Autonomous OS & Dev", "PowerShell Execution, File I/O, Desktop Apps, Multilingual")
     table.add_row("⚡ adhoc", "Dynamic Spawner", "Deep Web Research, Script Generation, Ad-Hoc Tasks")
     console.print(table)
     console.print()
@@ -91,6 +92,7 @@ async def process_directive(engine: LunaCEOEngine, user_input: str):
             "projects": "blue",
             "marketing": "magenta",
             "assistant": "cyan",
+            "system_control": "bright_green",
             "adhoc": "yellow"
         }.get(res.target_domain, "white")
         
