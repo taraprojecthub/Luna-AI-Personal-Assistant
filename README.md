@@ -1,6 +1,8 @@
-# LUNA: Chief Executive Multi-Agent System
+# 🌙 LUNA: Personal Windows AI Voice Assistant
 
-> **LUNA** is an autonomous executive AI agent operating as your personal CEO to supervise dynamic, domain-specific sub-agents across **Home Automation**, **Project & Engineering Management**, and **Social Media Marketing**.
+**Developed by THaRU**
+
+> **LUNA** is an advanced Windows-first desktop AI voice assistant with a real-time reactive holographic HUD, push-to-talk voice interaction, wake-word detection, local LLM reasoning via Ollama (with OpenAI/Gemini support), smart Windows system controls, and an encrypted remote companion dashboard.
 
 Based on the [Building AI Agents Architecture](Building%20AI%20Agents%20Architecture.pdf) specification.
 

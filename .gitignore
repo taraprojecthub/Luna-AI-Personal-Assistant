@@ -1,7 +1,37 @@
+# Virtual environments & caches
 .venv/
+venv/
 __pycache__/
 *.py[cod]
 *$py.class
-.env
 .pytest_cache/
+
+# Secrets & credentials
+.env
+.env.*
+api_keys.json
+**/api_keys.json
+certs/
+**/certs/
+whatsapp_web/
+**/whatsapp_web/
+**/token*.json
+**/client_secret*.json
+*credentials*.json
+*.key
+*.pem
+*.crt
+
+# Personal / Local runtime memory & databases
+luna_memory.db
+*.db
+*.sqlite
+long_term.json
+**/long_term.json
+
+# Logs & temp
 *.log
+logs/
+downloads/
+screenshots/
+archive_legacy_web_app/
